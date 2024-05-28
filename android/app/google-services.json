@@ -1,0 +1,49 @@
+{
+  "project_info": {
+    "project_number": "158067313028",
+    "firebase_url": "https://connectgate-app-default-rtdb.firebaseio.com",
+    "project_id": "connectgate-app",
+    "storage_bucket": "connectgate-app.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:158067313028:android:57d6285851097974c6b5d1",
+        "android_client_info": {
+          "package_name": "com.connectgate.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCc4QTz-D_dXL9I1tkTBPg_o-ZEcUC9-S8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:158067313028:android:e49c2f7c02c2b299c6b5d1",
+        "android_client_info": {
+          "package_name": "com.connectgateapp.android"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCc4QTz-D_dXL9I1tkTBPg_o-ZEcUC9-S8"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

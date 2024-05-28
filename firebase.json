@@ -1,0 +1,1 @@
+{"flutter":{"platforms":{"android":{"default":{"projectId":"connectgate-app","appId":"1:158067313028:android:651850e572e322a1c6b5d1","fileOutput":"android/app/google-services.json"}},"dart":{"lib/firebase_options.dart":{"projectId":"connectgate-app","configurations":{"android":"1:158067313028:android:651850e572e322a1c6b5d1","ios":"1:158067313028:ios:3d6826e6e0bf4a7cc6b5d1"}}}}}}
