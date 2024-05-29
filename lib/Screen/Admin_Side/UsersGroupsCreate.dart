@@ -244,7 +244,7 @@ class _UsersGroupsCreateState extends State<UsersGroupsCreate> {
           activeColor: Colors.black,
         ),
         Text(
-          'Creang Groups'.tr,
+          'Creating Groups'.tr,
           style: const TextStyle(fontFamily: 'NRT', fontSize: 12),
         ),
       ],

@@ -14,6 +14,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class LoginUser extends StatefulWidget {
   const LoginUser({super.key});
@@ -397,6 +398,60 @@ class _LoginUserState extends State<LoginUser> {
                                               ),
                                             ),
                                           ),
+                                        ),
+                                        const SizedBox(height: 20),
+                                        Column(
+                                          children: [
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                Text(
+                                                  "By continuing, you agree to our "
+                                                      .tr,
+                                                  style: TextStyle(
+                                                      color: Colors.grey,
+                                                      fontSize: 10),
+                                                ),
+                                              ],
+                                            ),
+                                            Row(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              children: [
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    launch(
+                                                        "https://sites.google.com/view/connectgate-termsandconditions/home");
+                                                  },
+                                                  child: Text(
+                                                    "Terms and Conditions".tr,
+                                                    style: TextStyle(
+                                                        color: Colors.blue,
+                                                        fontSize: 10),
+                                                  ),
+                                                ),
+                                                Text(
+                                                  " and ".tr,
+                                                  style: TextStyle(
+                                                      color: Colors.grey,
+                                                      fontSize: 10),
+                                                ),
+                                                GestureDetector(
+                                                  onTap: () {
+                                                    launch(
+                                                        "https://sites.google.com/view/privacy-policy-connectgate/home");
+                                                  },
+                                                  child: Text(
+                                                    "Privacy Policy".tr,
+                                                    style: TextStyle(
+                                                        color: Colors.blue,
+                                                        fontSize: 10),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
                                         ),
                                       ],
                                     ),

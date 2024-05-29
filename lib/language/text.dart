@@ -22,7 +22,7 @@ class MyLocal implements Translations {
           "Welcome to \n ConnectGate admin":
               " بەخێربێیت بۆ \n ConnectGate Admin  ",
           'Welcome to ConnectGate!': "ConnectGate Admin بەخێربێیت بۆ",
-          "please sign in to access the": "تکایە خۆ تۆماربکە بۆ ",
+          "please sign in to access the": "تکایە خۆ تۆمارب کە بۆ ",
           "Admin Functionalities": "دەستهەلاتەکانی بەڕێوەبەر",
           "Error": "هەڵە",
           "Language": "زمان",
@@ -61,7 +61,7 @@ class MyLocal implements Translations {
           " Users & Groups": " بەکارهێنەران و گرووپەکان",
           "Creating Users": "دروستکردنی بەکارهێنەران",
           'Creating Groups:': "دروستکردنی گرۆپ",
-          'Creang Groups': 'دروستکردنی گرۆپ',
+          'Creating Groups': 'دروستکردنی گرۆپ',
           "Name": "ناو",
           "Enter User Full Name Here": "تکایە ناوی تەواوی بەکارهێنەر لێببە",
           "Enter Email Here": " لێرە  ئیمێلەکە بنۆسە",
@@ -119,6 +119,10 @@ class MyLocal implements Translations {
           'New version available!': '!وەشانەوەی نوێ بەردەستە',
           'Our social media:': ':ئێمە لە سۆشەل میدیا',
           'Navid Hishyar Hassan': 'نەڤید هشیار حسن',
+          "By continuing, you agree to our ": "بە بەردەوام بوون، تۆ ڕازیت بە",
+          "Terms and Conditions": "بار و دۆخ و مەرجەکان",
+          " and ": "و",
+          "Privacy Policy": "سیاسەتی پاراستنی نهێنی",
         },
         "en": {
           "email": "email",
@@ -214,6 +218,11 @@ class MyLocal implements Translations {
           'Our social media:': 'Our social media:',
           'Navid Hishyar Hassan': 'Navid Hishyar Hassan',
           'Update Now': 'Update Now',
+          "By continuing, you agree to our ":
+              "By continuing, you agree to our ",
+          "Terms and Conditions": "Terms and Conditions",
+          " and ": " and ",
+          "Privacy Policy": "Privacy Policy",
         },
         "es": {
           'Unlock valuable insights and connect with\nresearchers and participants worldwide':
@@ -264,7 +273,7 @@ class MyLocal implements Translations {
           " Users & Groups": "المستخدمون والمجموعات",
           "Creating Users": "إنشاء المستخدمين",
           'Creating Groups:': "إنشاء مجموعات",
-          'Creang Groups': "إنشاء مجموعات",
+          'Creating Groups': "إنشاء مجموعات",
           "Name": "الاسم",
           "Enter User Full Name Here": "أدخل اسم المستخدم الكامل هنا",
           "Enter Email Here": "أدخل البريد الإلكتروني هنا",
@@ -323,6 +332,11 @@ class MyLocal implements Translations {
           'Our social media:': 'وسائل الاعلام الاجتماعية لدينا',
           'Navid Hishyar Hassan': 'نەڤید هشیار حسن',
           'Update Now': 'تحديث الان',
+          "By continuing, you agree to our ":
+              'من خلال الاستمرار، فإنك توافق على لدينا',
+          "Terms and Conditions": 'الأحكام والشروط',
+          " and ": 'و',
+          "Privacy Policy": "سياسة الخصوصية",
         },
         "it": {
           'Unlock valuable insights and connect with\nresearchers and participants worldwide':
@@ -376,7 +390,7 @@ class MyLocal implements Translations {
           " Users & Groups": " بەکارهێنەران و گرووپەکان",
           "Creating Users": "دروستکردنا بەکارهێنەران",
           'Creating Groups:': "دروستکرنا گرۆپا",
-          'Creang Groups': 'دروستکرنا گرۆپا',
+          'Creating Groups': 'دروستکرنا گرۆپا',
           "Name": "ناڤ",
           "Enter User Full Name Here": "ناڤێ خۆ بتەمامی بنڤیسە",
           "Email": "ئیمێل ",
@@ -437,6 +451,12 @@ class MyLocal implements Translations {
           'Our social media:': 'ئەم ل سوشیال میدیایێ',
           'Navid Hishyar Hassan': 'نەڤید هشیار حسن',
           'Update Now': 'نوکە نیبکە',
+
+          "By continuing, you agree to our ": 'ب بەردەوام بونێ تۆیێ رازی ژ',
+          "Terms and Conditions": 'مەرج',
+
+          " and ": "و",
+          "Privacy Policy": 'سیاسەتا مە',
         },
       };
 }
