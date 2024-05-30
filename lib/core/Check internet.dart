@@ -9,7 +9,9 @@ class connectivitycheck with ChangeNotifier {
   Connectivity _connectivity = new Connectivity();
   bool _isonline = false;
   bool get isonline => _isonline;
-
+  connectivitycheck() {
+    startMonitrin();
+  }
   startMonitrin() async {
     await initconnectibity();
     _connectivity.onConnectivityChanged.listen((result) async {

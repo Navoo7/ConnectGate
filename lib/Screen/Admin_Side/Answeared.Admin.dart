@@ -203,7 +203,7 @@ class _AnswearedAdminState extends State<AnswearedAdmin> {
                                               children: [
                                                 SizedBox(
                                                   height: 45,
-                                                  width: 45,
+                                                  width: 60,
                                                   child: ElevatedButton(
                                                     onPressed: () async {
                                                       final questionData = {

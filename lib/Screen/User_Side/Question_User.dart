@@ -286,7 +286,7 @@ class _QuestionUserState extends State<QuestionUser> {
                                                     children: [
                                                       SizedBox(
                                                         height: 45,
-                                                        width: 45,
+                                                        width: 60,
                                                         child: ElevatedButton(
                                                           onPressed: () async {
                                                             // Assuming you have a "question" variable representing the question data
