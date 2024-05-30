@@ -22,11 +22,11 @@ Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   shared_pref = await SharedPreferences.getInstance();
-  runApp(ConnectGateApp());
+  runApp(ConnectGate());
 }
 
-class ConnectGateApp extends StatelessWidget {
-  ConnectGateApp({super.key});
+class ConnectGate extends StatelessWidget {
+  ConnectGate({super.key});
   final MyLangControler _controller = Get.put(MyLangControler());
   @override
   Widget build(BuildContext context) {
