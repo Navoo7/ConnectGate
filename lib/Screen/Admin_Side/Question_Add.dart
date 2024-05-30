@@ -286,8 +286,6 @@ class _QuestionAddState extends State<QuestionAdd> {
                                                   .tr,
                                               Colors.red);
                                         } else {
-                                          questionTitleController.clear();
-                                          questionController.clear();
                                           questionProvider.addQuestion(
                                             context: context,
                                             groupname: selectedGroupName,
@@ -297,6 +295,8 @@ class _QuestionAddState extends State<QuestionAdd> {
                                             type: selectedType,
                                             options: multipleChoiceOptions,
                                           );
+                                          questionTitleController.clear();
+                                          questionController.clear();
                                         }
 
                                         // Use the questionProvider to add the question
