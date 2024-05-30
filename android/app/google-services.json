@@ -8,9 +8,9 @@
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:158067313028:android:57d6285851097974c6b5d1",
+        "mobilesdk_app_id": "1:158067313028:android:75526bfe86d4cc85c6b5d1",
         "android_client_info": {
-          "package_name": "com.connectgate.app"
+          "package_name": "com.ConnectGate.android"
         }
       },
       "oauth_client": [],
@@ -27,9 +27,9 @@
     },
     {
       "client_info": {
-        "mobilesdk_app_id": "1:158067313028:android:e49c2f7c02c2b299c6b5d1",
+        "mobilesdk_app_id": "1:158067313028:android:81982bef9925254cc6b5d1",
         "android_client_info": {
-          "package_name": "com.connectgateapp.android"
+          "package_name": "com.ConnectGate.android"
         }
       },
       "oauth_client": [],

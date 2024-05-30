@@ -51,7 +51,7 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions android = FirebaseOptions(
     apiKey: 'AIzaSyCc4QTz-D_dXL9I1tkTBPg_o-ZEcUC9-S8',
-    appId: '1:158067313028:android:e49c2f7c02c2b299c6b5d1',
+    appId: '1:158067313028:android:81982bef9925254cc6b5d1',
     messagingSenderId: '158067313028',
     projectId: 'connectgate-app',
     databaseURL: 'https://connectgate-app-default-rtdb.firebaseio.com',
@@ -60,11 +60,12 @@ class DefaultFirebaseOptions {
 
   static const FirebaseOptions ios = FirebaseOptions(
     apiKey: 'AIzaSyDnVyDufsOO0HSaT7oFS0tMM_NYB8YK_EE',
-    appId: '1:158067313028:ios:7fbd47fd1c56d72fc6b5d1',
+    appId: '1:158067313028:ios:fe339afb8b07b537c6b5d1',
     messagingSenderId: '158067313028',
     projectId: 'connectgate-app',
     databaseURL: 'https://connectgate-app-default-rtdb.firebaseio.com',
     storageBucket: 'connectgate-app.appspot.com',
-    iosBundleId: 'com.example.connectgateapp',
+    iosBundleId: 'com.ConnectGate.ios',
   );
+
 }
