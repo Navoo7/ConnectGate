@@ -82,7 +82,7 @@ class _AnswearedUserState extends State<AnswearedUser> {
                                   scale: 1.5,
                                 ),
                                 SizedBox(
-                                  height: 7,
+                                  height: 4,
                                 ),
                                 Text(
                                   'Welcome to ConnectGate!'.tr,
@@ -120,7 +120,7 @@ class _AnswearedUserState extends State<AnswearedUser> {
                               ],
                             ),
                             const SizedBox(
-                              width: 80,
+                              width: 70,
                             ),
                           ],
                         ),

@@ -589,10 +589,9 @@ class _ProfileAdminState extends State<ProfileAdmin> {
                                     child: InkWell(
                                       onTap: () async {
                                         AuthService(context).signOutAdmin();
-
-                                        // AuthService authService = AuthService(context);
-                                        // await authService.signOutAdmin();
-                                        // Redirect to the login screen after logout
+                                        // // AuthService authService = AuthService(context);
+                                        // // await authService.signOutAdmin();
+                                        // // Redirect to the login screen after logout
                                         Navigator.pushAndRemoveUntil(
                                           context,
                                           MaterialPageRoute(
@@ -601,6 +600,17 @@ class _ProfileAdminState extends State<ProfileAdmin> {
                                           ),
                                           (route) => true,
                                         );
+
+                                        // await AuthService(context)
+                                        //     .signOutAdmin();
+                                        // Navigator.pushAndRemoveUntil(
+                                        //   context,
+                                        //   MaterialPageRoute(
+                                        //       builder: (context) =>
+                                        //           const LoginUser()),
+                                        //   (route) =>
+                                        //       false, // Remove all previous routes
+                                        // );
                                       },
                                       child: Row(
                                         children: [

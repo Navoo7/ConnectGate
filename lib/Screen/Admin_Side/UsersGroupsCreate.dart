@@ -3,6 +3,7 @@
 
 import 'dart:math';
 
+import 'package:connectgate/Screen/Admin_Side/Admin_Main_Screen.dart';
 import 'package:connectgate/Services/auth_services.dart';
 import 'package:connectgate/Services/group_services.dart';
 import 'package:connectgate/core/CeckForUpdate.dart';
@@ -59,6 +60,17 @@ class _UsersGroupsCreateState extends State<UsersGroupsCreate> {
     // SeendUpdate(context);
     super.dispose();
   }
+
+  // @override
+  // void dispose() {
+  //   _isDisposed = true;
+  //   passwordController.dispose();
+  //   nameController.dispose();
+  //   emailController.dispose();
+  //   groupNameController.dispose();
+  //   // Dispose any other controllers or streams if used
+  //   super.dispose();
+  // }
 
   MyAppAdmins? adminData;
   void get() async {
@@ -132,6 +144,13 @@ class _UsersGroupsCreateState extends State<UsersGroupsCreate> {
                         leading: InkWell(
                           onTap: () {
                             Navigator.pop(context);
+                            // Navigator.pushAndRemoveUntil(
+                            //   context,
+                            //   MaterialPageRoute(
+                            //       builder: (context) =>
+                            //           const AdminMainScreen()),
+                            //   (route) => false, // Remove all previous routes
+                            // );
                           },
                           child: const Icon(
                             Icons.arrow_back,
