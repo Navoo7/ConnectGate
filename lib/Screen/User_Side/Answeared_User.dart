@@ -120,7 +120,7 @@ class _AnswearedUserState extends State<AnswearedUser> {
                               ],
                             ),
                             const SizedBox(
-                              width: 70,
+                              width: 80,
                             ),
                           ],
                         ),
