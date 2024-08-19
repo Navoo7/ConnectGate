@@ -5,7 +5,6 @@ import 'dart:async';
 import 'package:connectgate/Screen/Admin_Side/Admin_Main_Screen.dart';
 import 'package:connectgate/Screen/User_Side/Login_User.dart';
 import 'package:connectgate/Screen/User_Side/User_Main_Screen.dart';
-
 import 'package:connectgate/core/Check%20internet.dart';
 import 'package:connectgate/core/MyImages.dart';
 import 'package:connectgate/core/NoInternet.dart';
@@ -27,24 +26,36 @@ class _SplashScreenState extends State<SplashScreen> {
       Pref_Services(); // Initialize Pref_Services
   String appVersion = 'Unknown'; // Initialize appVersion with a default value
   @override
-  void initState() {
-    super.initState();
-    checkLoginStatus();
-    // SeendUpdate(context);
-    Provider.of<connectivitycheck>(context, listen: false).startMonitrin();
-    getAppVersion();
-  }
-
-  Future<void> getAppVersion() async {
-    try {
-      PackageInfo packageInfo = await PackageInfo.fromPlatform();
-      setState(() {
-        appVersion =
-            packageInfo.version; // Update appVersion with the fetched value
-      });
-    } catch (e) {
-      print('Error getting app version: $e');
-    }
+  Widget build(BuildContext context) {
+    return Consumer<connectivitycheck>(builder: (context, modle, child) {
+      return modle.isonline
+          ? Scaffold(
+              backgroundColor: Colors.white,
+              body: Center(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  children: [
+                    const SizedBox(height: 250),
+                    Image.asset(
+                      MyImage.connectGate2,
+                      scale: 1.1,
+                    ),
+                    const SizedBox(height: 250),
+                    const CircularProgressIndicator(
+                      color: Colors.black,
+                    ),
+                    const SizedBox(height: 40),
+                    Text(
+                      'ConnectGate V$appVersion',
+                      style: const TextStyle(fontSize: 11),
+                    ),
+                  ],
+                ),
+              ),
+            )
+          : Nointernet();
+    });
   }
 
   void checkLoginStatus() async {
@@ -107,37 +118,24 @@ class _SplashScreenState extends State<SplashScreen> {
     }
   }
 
+  Future<void> getAppVersion() async {
+    try {
+      PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      setState(() {
+        appVersion =
+            packageInfo.version; // Update appVersion with the fetched value
+      });
+    } catch (e) {
+      print('Error getting app version: $e');
+    }
+  }
+
   @override
-  Widget build(BuildContext context) {
-    return Consumer<connectivitycheck>(builder: (context, modle, child) {
-      return modle.isonline
-          ? Scaffold(
-              backgroundColor: Colors.white,
-              body: Center(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  children: [
-                    const SizedBox(height: 250),
-                    Image.asset(
-                      MyImage.connectGate2,
-                      scale: 1.1,
-                    ),
-                    const SizedBox(height: 250),
-                    const CircularProgressIndicator(
-                      color: Colors.black,
-                      strokeWidth: 1.4,
-                    ),
-                    const SizedBox(height: 40),
-                    Text(
-                      'ConnectGate V$appVersion',
-                      style: const TextStyle(fontSize: 11),
-                    ),
-                  ],
-                ),
-              ),
-            )
-          : Nointernet();
-    });
+  void initState() {
+    super.initState();
+    checkLoginStatus();
+    // SeendUpdate(context);
+    Provider.of<connectivitycheck>(context, listen: false).startMonitrin();
+    getAppVersion();
   }
 }

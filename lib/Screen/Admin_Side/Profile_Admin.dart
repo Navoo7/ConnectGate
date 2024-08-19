@@ -11,11 +11,11 @@ import 'package:connectgate/core/NoInternet.dart';
 import 'package:connectgate/language/MyControler.dart';
 import 'package:connectgate/main.dart';
 import 'package:connectgate/models/admin_model.dart';
+import 'package:connectgate/models/static_value.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:provider/provider.dart';
 import 'package:package_info_plus/package_info_plus.dart';
-import 'package:connectgate/models/static_value.dart';
+import 'package:provider/provider.dart';
 
 class ProfileAdmin extends StatefulWidget {
   const ProfileAdmin({super.key});
@@ -34,54 +34,13 @@ class _ProfileAdminState extends State<ProfileAdmin> {
   // Add a variable to hold the current user's data
   MyAppAdmins? currentAdmin;
   @override
-  void initState() {
-    super.initState();
-
-    Future.delayed(const Duration(seconds: 1));
-    SeendUpdate(context);
-    // Call the method to get the current user's data from Firestore
-    fetchUserData();
-    getAppVersion();
-
-    String? lang = shared_pref!.getString("lang");
-    if (lang == "es") {
-      _selectedLanguage = 'es';
-    } else if (lang == "fr") {
-      _selectedLanguage = 'fr';
-    } else if (lang == "en") {
-      _selectedLanguage = 'en';
-    } else if (lang == "it") {
-      _selectedLanguage = 'it';
-    } else {
-      _selectedLanguage = 'en'; // Default to 'en' if no language is set
-    }
-  }
-
-  Future<void> getAppVersion() async {
-    try {
-      PackageInfo packageInfo = await PackageInfo.fromPlatform();
-      setState(() {
-        appVersion =
-            packageInfo.version; // Update appVersion with the fetched value
-      });
-    } catch (e) {
-      print('Error getting app version: $e');
-    }
-  }
-
-  Future<void> fetchUserData() async {
-    AuthService authService = AuthService(context);
-    MyAppAdmins? adminData = (await authService.getCurrentAdmin());
-    setState(() {
-      currentAdmin = adminData;
-    });
-  }
-
-  @override
   Widget build(BuildContext context) {
     // If the user data is not yet fetched, show a loading indicator or return an empty Container
     if (currentAdmin == null) {
-      return const Center(child: CircularProgressIndicator());
+      return const Center(
+          child: CircularProgressIndicator(
+        color: Colors.black,
+      ));
     }
     return Consumer<connectivitycheck>(builder: (context, modle, child) {
       return modle.isonline
@@ -655,5 +614,49 @@ class _ProfileAdminState extends State<ProfileAdmin> {
             )
           : Nointernet();
     });
+  }
+
+  Future<void> fetchUserData() async {
+    AuthService authService = AuthService(context);
+    MyAppAdmins? adminData = (await authService.getCurrentAdmin());
+    setState(() {
+      currentAdmin = adminData;
+    });
+  }
+
+  Future<void> getAppVersion() async {
+    try {
+      PackageInfo packageInfo = await PackageInfo.fromPlatform();
+      setState(() {
+        appVersion =
+            packageInfo.version; // Update appVersion with the fetched value
+      });
+    } catch (e) {
+      print('Error getting app version: $e');
+    }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    Future.delayed(const Duration(seconds: 1));
+    SeendUpdate(context);
+    // Call the method to get the current user's data from Firestore
+    fetchUserData();
+    getAppVersion();
+
+    String? lang = shared_pref!.getString("lang");
+    if (lang == "es") {
+      _selectedLanguage = 'es';
+    } else if (lang == "fr") {
+      _selectedLanguage = 'fr';
+    } else if (lang == "en") {
+      _selectedLanguage = 'en';
+    } else if (lang == "it") {
+      _selectedLanguage = 'it';
+    } else {
+      _selectedLanguage = 'en'; // Default to 'en' if no language is set
+    }
   }
 }

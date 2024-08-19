@@ -39,28 +39,6 @@ class _UsersGroupsCreateState extends State<UsersGroupsCreate> {
   List<String> groupNames = [];
   List<MyAppUser> allUsersList = []; //eplace with real users
 
-  @override
-  void initState() {
-    super.initState();
-    _authService = AuthService(context);
-    _authService.getUsers().listen((users) {
-      get();
-      if (!_isDisposed) {
-        setState(() {
-          allUsersList = users;
-        });
-      }
-    });
-  }
-
-  @override
-  void dispose() {
-    _isDisposed = true; // Update _isDisposed when the widget is disposed
-    passwordController.dispose();
-    // SeendUpdate(context);
-    super.dispose();
-  }
-
   // @override
   // void dispose() {
   //   _isDisposed = true;
@@ -73,9 +51,6 @@ class _UsersGroupsCreateState extends State<UsersGroupsCreate> {
   // }
 
   MyAppAdmins? adminData;
-  void get() async {
-    adminData = await AuthService(context).getCurrentAdmin();
-  }
 
   void addGroup() async {
     if (groupNameController.text.isNotEmpty) {
@@ -92,37 +67,6 @@ class _UsersGroupsCreateState extends State<UsersGroupsCreate> {
         groupNames.add(newGroup.name);
         groupNameController.text = '';
       });
-    }
-  }
-
-  Future<void> signUpUser() async {
-    if (_isDisposed) return;
-
-    String name = nameController.text.trim();
-    String email = emailController.text.trim();
-    String password = passwordController.text.trim();
-    if (name.isEmpty || email.isEmpty || password.isEmpty) {
-      _showSnackbar(context, 'Please fill in all fields'.tr, Colors.red);
-      return;
-    }
-
-    try {
-      MyAppUser? newUser = await _authService.signUpUser(
-        name: name,
-        email: email,
-        password: password,
-      );
-      if (newUser != null) {
-        // Clear the text fields after successful sign-up
-        nameController.clear();
-        emailController.clear();
-        passwordController.clear();
-        _showSnackbar(context, 'User created successfully'.tr, Colors.green);
-      } else {
-        _showSnackbar(context, 'User creation failed'.tr, Colors.red);
-      }
-    } catch (e) {
-      _showSnackbar(context, 'Error creating user: $e'.tr, Colors.red);
     }
   }
 
@@ -227,7 +171,9 @@ class _UsersGroupsCreateState extends State<UsersGroupsCreate> {
               )
             : Nointernet();
       }
-      return const CircularProgressIndicator();
+      return const CircularProgressIndicator(
+        color: Colors.black,
+      );
     });
   }
 
@@ -265,6 +211,153 @@ class _UsersGroupsCreateState extends State<UsersGroupsCreate> {
         Text(
           'Creating Groups'.tr,
           style: const TextStyle(fontFamily: 'NRT', fontSize: 12),
+        ),
+      ],
+    );
+  }
+
+  Widget creatingGroupsFiled() {
+    return Column(
+      children: [
+        Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 30),
+              child: Text(
+                'Creating Groups:'.tr,
+                style: const TextStyle(
+                    fontSize: 18, fontFamily: 'ageo-boldd', letterSpacing: ln2),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(
+          height: 22,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 30),
+          child: TextField(
+            minLines: 1,
+            maxLines: 8,
+            controller: groupNameController,
+            cursorColor: Colors.black,
+            decoration: InputDecoration(
+              labelText: 'Group Name'.tr,
+              hintText: 'Enter GroupName Here'.tr,
+              labelStyle: const TextStyle(
+                color: Colors.grey,
+                fontSize: 14.0,
+                fontWeight: FontWeight.w400,
+              ),
+              hintStyle: const TextStyle(
+                color: Colors.grey,
+                fontSize: 14.0,
+              ),
+              prefixIcon: const Icon(
+                Icons.group,
+                color: Colors.black,
+                size: 20,
+              ),
+              enabledBorder: OutlineInputBorder(
+                borderSide: const BorderSide(
+                  color: Color.fromARGB(255, 183, 183, 183),
+                  width: 2,
+                ),
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+              focusedBorder: OutlineInputBorder(
+                borderSide: const BorderSide(
+                  color: Colors.black,
+                  width: 1.5,
+                ),
+                borderRadius: BorderRadius.circular(10.0),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(
+          height: 40,
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(
+            horizontal: 50,
+          ),
+          child: SizedBox(
+            height: 47,
+            width: double.infinity,
+            child: ElevatedButton(
+              onPressed: () {
+                addGroup();
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.black,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(20.0),
+                ),
+              ),
+              child: Text(
+                'Save'.tr,
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+          ),
+        ),
+        const SizedBox(
+          height: 12,
+        ),
+        // Assign User to Group Section
+        // Display created groups
+        StreamBuilder<List<MyAppGroup>>(
+          stream: _groupService.getGroups(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator(
+                color: Colors.black,
+              );
+            } else if (snapshot.hasError) {
+              return Text('Error: ${snapshot.error}');
+            } else {
+              final groups = snapshot.data ?? [];
+
+              return ListView.builder(
+                shrinkWrap: true,
+                itemCount: groups.length,
+                itemBuilder: (context, index) {
+                  final group = groups[index]; // Get the group at index
+                  return ListTile(
+                    title: Text(
+                      group.name,
+                      style: const TextStyle(
+                          fontFamily: 'ageo-bold', fontSize: 18),
+                    ),
+                    subtitle: Text(
+                      'Users: ${group.users.map((user) => user.name).join(', ')}',
+                      style: const TextStyle(fontSize: 12),
+                    ),
+                    trailing: ElevatedButton(
+                      onPressed: () => _showAddUsersDialog(group, allUsersList),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.black,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(50.0),
+                        ),
+                      ),
+                      child: Text(
+                        'Add Users'.tr,
+                        style: const TextStyle(
+                            color: Colors.white,
+                            fontFamily: 'NRT',
+                            fontSize: 12),
+                      ),
+                    ),
+                  );
+                },
+              );
+            }
+          },
         ),
       ],
     );
@@ -484,149 +577,61 @@ class _UsersGroupsCreateState extends State<UsersGroupsCreate> {
     );
   }
 
-  Widget creatingGroupsFiled() {
-    return Column(
-      children: [
-        Row(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Text(
-                'Creating Groups:'.tr,
-                style: const TextStyle(
-                    fontSize: 18, fontFamily: 'ageo-boldd', letterSpacing: ln2),
-              ),
-            ),
-          ],
-        ),
-        const SizedBox(
-          height: 22,
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 30),
-          child: TextField(
-            minLines: 1,
-            maxLines: 8,
-            controller: groupNameController,
-            cursorColor: Colors.black,
-            decoration: InputDecoration(
-              labelText: 'Group Name'.tr,
-              hintText: 'Enter GroupName Here'.tr,
-              labelStyle: const TextStyle(
-                color: Colors.grey,
-                fontSize: 14.0,
-                fontWeight: FontWeight.w400,
-              ),
-              hintStyle: const TextStyle(
-                color: Colors.grey,
-                fontSize: 14.0,
-              ),
-              prefixIcon: const Icon(
-                Icons.group,
-                color: Colors.black,
-                size: 20,
-              ),
-              enabledBorder: OutlineInputBorder(
-                borderSide: const BorderSide(
-                  color: Color.fromARGB(255, 183, 183, 183),
-                  width: 2,
-                ),
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-              focusedBorder: OutlineInputBorder(
-                borderSide: const BorderSide(
-                  color: Colors.black,
-                  width: 1.5,
-                ),
-                borderRadius: BorderRadius.circular(10.0),
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(
-          height: 40,
-        ),
-        Padding(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 50,
-          ),
-          child: SizedBox(
-            height: 47,
-            width: double.infinity,
-            child: ElevatedButton(
-              onPressed: () {
-                addGroup();
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.black,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(20.0),
-                ),
-              ),
-              child: Text(
-                'Save'.tr,
-                style: const TextStyle(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-          ),
-        ),
-        const SizedBox(
-          height: 12,
-        ),
-        // Assign User to Group Section
-        // Display created groups
-        StreamBuilder<List<MyAppGroup>>(
-          stream: _groupService.getGroups(),
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const CircularProgressIndicator();
-            } else if (snapshot.hasError) {
-              return Text('Error: ${snapshot.error}');
-            } else {
-              final groups = snapshot.data ?? [];
+  @override
+  void dispose() {
+    _isDisposed = true; // Update _isDisposed when the widget is disposed
+    passwordController.dispose();
+    // SeendUpdate(context);
+    super.dispose();
+  }
 
-              return ListView.builder(
-                shrinkWrap: true,
-                itemCount: groups.length,
-                itemBuilder: (context, index) {
-                  final group = groups[index]; // Get the group at index
-                  return ListTile(
-                    title: Text(
-                      group.name,
-                      style: const TextStyle(
-                          fontFamily: 'ageo-bold', fontSize: 18),
-                    ),
-                    subtitle: Text(
-                      'Users: ${group.users.map((user) => user.name).join(', ')}',
-                      style: const TextStyle(fontSize: 12),
-                    ),
-                    trailing: ElevatedButton(
-                      onPressed: () => _showAddUsersDialog(group, allUsersList),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.black,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50.0),
-                        ),
-                      ),
-                      child: Text(
-                        'Add Users'.tr,
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontFamily: 'NRT',
-                            fontSize: 12),
-                      ),
-                    ),
-                  );
-                },
-              );
-            }
-          },
-        ),
-      ],
-    );
+  void get() async {
+    adminData = await AuthService(context).getCurrentAdmin();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _authService = AuthService(context);
+    _authService.getUsers().listen((users) {
+      get();
+      if (!_isDisposed) {
+        setState(() {
+          allUsersList = users;
+        });
+      }
+    });
+  }
+
+  Future<void> signUpUser() async {
+    if (_isDisposed) return;
+
+    String name = nameController.text.trim();
+    String email = emailController.text.trim();
+    String password = passwordController.text.trim();
+    if (name.isEmpty || email.isEmpty || password.isEmpty) {
+      _showSnackbar(context, 'Please fill in all fields'.tr, Colors.red);
+      return;
+    }
+
+    try {
+      MyAppUser? newUser = await _authService.signUpUser(
+        name: name,
+        email: email,
+        password: password,
+      );
+      if (newUser != null) {
+        // Clear the text fields after successful sign-up
+        nameController.clear();
+        emailController.clear();
+        passwordController.clear();
+        _showSnackbar(context, 'User created successfully'.tr, Colors.green);
+      } else {
+        _showSnackbar(context, 'User creation failed'.tr, Colors.red);
+      }
+    } catch (e) {
+      _showSnackbar(context, 'Error creating user: $e'.tr, Colors.red);
+    }
   }
 
   Future<void> _showAddUsersDialog(

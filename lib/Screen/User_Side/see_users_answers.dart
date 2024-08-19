@@ -9,8 +9,8 @@ import 'package:connectgate/Services/auth_services.dart';
 import 'package:connectgate/core/Check%20internet.dart';
 import 'package:connectgate/core/NoInternet.dart';
 import 'package:connectgate/models/user_model.dart';
-import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/material.dart';
 import 'package:get_time_ago/get_time_ago.dart';
 import 'package:provider/provider.dart';
 
@@ -37,174 +37,162 @@ class _SeeAnsweresState extends State<SeeAnsweres> {
   // bool visible = true;
   MyAppUser? currentUser;
 
-  Future<void> fetchUserData() async {
-    AuthService authService = AuthService(context);
-    MyAppUser? userData = (await authService.getCurrentUser());
-    setState(() {
-      currentUser = userData;
-    });
-  }
-
-  Future<void> fetchUserGroups() async {
-    try {
-      final groups = await getCurrentUserGroups();
-      setState(() {
-        userGroups = groups;
-      });
-    } catch (e) {
-      print('Error fetching user groups: $e');
-    }
-  }
-
-// Function to retrieve current user's group IDs
-  Future<List<String>> getCurrentUserGroups() async {
-    List<String> userGroups = [];
-    try {
-      final User? user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        final DocumentSnapshot userDoc = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .get();
-
-        if (userDoc.exists) {
-          Map<String, dynamic>? groupsData = userDoc['groups'];
-
-          if (groupsData != null) {
-            // Add all group IDs to the userGroups list
-            userGroups.addAll(groupsData.keys);
-          }
-        }
-      }
-    } catch (e) {
-      print('Error: $e');
-    }
-    return userGroups;
-  }
-
-  Future<void> get_all_questions() async {
-    final firestore = FirebaseFirestore.instance;
-
-    // Reference to your Firestore collection
-    await Future.delayed(const Duration(seconds: 1));
-    final collectionReference = firestore
-        .collection(currentUser!.org)
-        .doc(currentUser!.city)
-        .collection('questions')
-        .where('groupIds',
-            arrayContainsAny: userGroups.isNotEmpty
-                ? userGroups
-                : ['']) // Ensure userGroups is not empty
-        .where('createdAt',
-            isGreaterThanOrEqualTo: DateTime.now().subtract(Duration(
-                hours: 24))) // Filter out questions older than 24 hours
-        .orderBy('createdAt', descending: false);
-    // Query the collection and get all documents
-    QuerySnapshot querySnapshot = await collectionReference.get();
-
-    // Initialize an empty map to store the document data
-    // _questionData = {};
-    // Loop through the documents and add them to the map
-    int index = 0;
-    _questionData = {};
-    querySnapshot.docs.forEach((document) {
-      final title = document.get("title") as String;
-      final timestamp = document.get('createdAt') as Timestamp;
-      final questionitself = document.get('question') as String;
-      final questiontype = document.get('type') as String;
-      final options = document.get('options') as List<dynamic>;
-      final groupname = document.get('groupname') as String;
-
-      ///
-      ///
-
-      final questionData = {
-        'title': title, // Replace with the actual data you want to pass
-        'createdAt': timestamp, // Replace with the actual data you want to pass
-        // Add more fields as needed
-        'question': questionitself,
-        'type': questiontype,
-        'options': options,
-        'groupname': groupname,
-      };
-
-      _questionData.addAll({index: questionData});
-
-      index++;
-    });
-    // Rename get_all_questions to _initializeQuestions and make it async
-
-//this is for ansawared questions checker
-
-    final firestore2 = FirebaseFirestore.instance;
-    await Future.delayed(const Duration(seconds: 1));
-    // Reference to your Firestore collection
-    final collectionReference2 = firestore2
-        .collection(currentUser!.org)
-        .doc(currentUser!.city)
-        .collection('answers')
-        .where('user_email',
-            isEqualTo: FirebaseAuth.instance.currentUser?.email);
-
-    // Query the collection and get all documents
-    QuerySnapshot querySnapshot2 = await collectionReference2.get();
-
-    // Initialize an empty map to store the document data
-    if (querySnapshot2.docs.isEmpty) {
-      return;
-    }
-
-    // Loop through the documents and add them to the map
-    querySnapshot2.docs.forEach((document) {
-      _questionData.removeWhere((key, value) {
-        return value['title'] == document.get("title") as String;
-      });
-
-      _questionData2 = _questionData;
-    });
-  }
-
-  @override
-  void dispose() {
-    _questionData = {};
-    // _questionData2 = {};
-    super.dispose();
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(const Duration(seconds: 1));
-    fetchUserData();
-    fetchUserGroups();
-    getCurrentUserGroups();
-    // _initializeQuestions();
-  }
-
-  Future<void> _initializeQuestions() async {
-    Future.delayed(const Duration(seconds: 1));
-    await get_all_questions();
-    // Future.delayed(const Duration(seconds: 1));
-    if (mounted) {
-      // Check if the widget is still mounted
-      if (_questionData2.keys.isEmpty) {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => UserMainScreen(),
-          ),
-        );
-      } else {
-        Navigator.pushReplacement(
-          context,
-          MaterialPageRoute(
-            builder: (context) => OpenQPage(
-              questionData: _questionData[_questionData2.keys.first],
+  Widget answares_card(String myTitle) {
+    return StreamBuilder<QuerySnapshot>(
+      stream: currentUser != null
+          ? FirebaseFirestore.instance
+              .collection(currentUser!.org)
+              .doc(currentUser!.city)
+              .collection('answers')
+              .where('title', isEqualTo: myTitle)
+              .orderBy('timestamp', descending: true) // Add orderBy clause here
+              .snapshots()
+          : Stream.empty(),
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(
+            child: CircularProgressIndicator(
+              color: Colors.black,
             ),
-          ),
-        );
-      }
-    }
+          );
+        } else if (snapshot.hasError) {
+          return Text('Error: ${snapshot.error}');
+        } else if (!snapshot.hasData || snapshot.data == null) {
+          return Center(
+            child: SizedBox(
+                height: 20,
+                width: 20,
+                child: CircularProgressIndicator(
+                  color: Colors.black,
+                )),
+          );
+        } else {
+          final answers = snapshot.data!.docs;
+
+          return ListView.builder(
+            scrollDirection: Axis.vertical,
+            itemCount: answers.length,
+            itemBuilder: (context, index) {
+              final answer = answers[index];
+              final userName = answer.get('user_name');
+              final userAnswer = answer.get('answer');
+              // final timestamp = answer.get('timestamp') as Timestamp;
+              final timestamp = answer.get('timestamp') as Timestamp?;
+
+              final finalData = timestamp != null
+                  ? DateTime.parse(timestamp.toDate().toString())
+                  : null;
+              return Padding(
+                padding: const EdgeInsets.only(
+                    top: 2.5, left: 16, bottom: 16, right: 16),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Container(
+                    color: Color.fromARGB(221, 20, 20, 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 20, vertical: 10),
+                          child: Wrap(
+                            children: [
+                              Column(
+                                children: [
+                                  SizedBox(
+                                    height: 8,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Container(
+                                        height: 65,
+                                        width: 65,
+                                        decoration: BoxDecoration(
+                                            color: Colors.black,
+                                            borderRadius:
+                                                BorderRadius.circular(400)),
+                                        child: const Icon(
+                                          Icons.person_4,
+                                          color: Colors.white,
+                                          size: 45,
+                                        ),
+                                      ),
+                                      SizedBox(
+                                        width: 20,
+                                      ),
+                                      Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            userName,
+                                            style: const TextStyle(
+                                                fontSize: 16,
+                                                letterSpacing: 1.2,
+                                                color: Colors.white,
+                                                fontFamily: 'ageo-bold'),
+                                          ),
+                                          SizedBox(
+                                            height: 6,
+                                          ),
+                                          Text(
+                                            finalData != null
+                                                ? GetTimeAgo.parse(finalData)
+                                                : 'N/A', // Display 'N/A' while loading
+                                            style: TextStyle(
+                                                color: Colors.white,
+                                                //fontFamily: 'ageo',
+                                                letterSpacing: 1.1,
+                                                fontSize: 9,
+                                                fontWeight: FontWeight.w400),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  const Padding(
+                                    padding: EdgeInsets.only(left: 84.0),
+                                    child: Divider(
+                                      color: Colors.white30,
+                                      thickness: 1.4,
+                                    ),
+                                  ),
+                                  SizedBox(
+                                    height: 10,
+                                  ),
+                                  Text(
+                                    userAnswer,
+                                    softWrap: true,
+                                    overflow: TextOverflow.clip,
+                                    maxLines: 8,
+                                    textAlign: TextAlign.justify,
+                                    style: TextStyle(
+                                        height: 1.25,
+                                        color: Colors.white,
+                                        fontFamily: 'NRT',
+                                        fontSize: 14),
+                                  ),
+                                  SizedBox(
+                                    height: 9,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              );
+            },
+          );
+        }
+      },
+    );
   }
 
   @override
@@ -374,159 +362,179 @@ class _SeeAnsweresState extends State<SeeAnsweres> {
               )
             : Nointernet();
       }
-      return CircularProgressIndicator();
+      return CircularProgressIndicator(
+        color: Colors.black,
+      );
     });
   }
 
-  Widget answares_card(String myTitle) {
-    return StreamBuilder<QuerySnapshot>(
-      stream: currentUser != null
-          ? FirebaseFirestore.instance
-              .collection(currentUser!.org)
-              .doc(currentUser!.city)
-              .collection('answers')
-              .where('title', isEqualTo: myTitle)
-              .orderBy('timestamp', descending: true) // Add orderBy clause here
-              .snapshots()
-          : Stream.empty(),
-      builder: (context, snapshot) {
-        if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        } else if (snapshot.hasError) {
-          return Text('Error: ${snapshot.error}');
-        } else if (!snapshot.hasData || snapshot.data == null) {
-          return Center(
-            child: SizedBox(
-                height: 20, width: 20, child: CircularProgressIndicator()),
-          );
-        } else {
-          final answers = snapshot.data!.docs;
+  @override
+  void dispose() {
+    _questionData = {};
+    // _questionData2 = {};
+    super.dispose();
+  }
 
-          return ListView.builder(
-            scrollDirection: Axis.vertical,
-            itemCount: answers.length,
-            itemBuilder: (context, index) {
-              final answer = answers[index];
-              final userName = answer.get('user_name');
-              final userAnswer = answer.get('answer');
-              // final timestamp = answer.get('timestamp') as Timestamp;
-              final timestamp = answer.get('timestamp') as Timestamp?;
+  Future<void> fetchUserData() async {
+    AuthService authService = AuthService(context);
+    MyAppUser? userData = (await authService.getCurrentUser());
+    setState(() {
+      currentUser = userData;
+    });
+  }
 
-              final finalData = timestamp != null
-                  ? DateTime.parse(timestamp.toDate().toString())
-                  : null;
-              return Padding(
-                padding: const EdgeInsets.only(
-                    top: 2.5, left: 16, bottom: 16, right: 16),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(20),
-                  child: Container(
-                    color: Color.fromARGB(221, 20, 20, 20),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 20, vertical: 10),
-                          child: Wrap(
-                            children: [
-                              Column(
-                                children: [
-                                  SizedBox(
-                                    height: 8,
-                                  ),
-                                  Row(
-                                    children: [
-                                      Container(
-                                        height: 65,
-                                        width: 65,
-                                        decoration: BoxDecoration(
-                                            color: Colors.black,
-                                            borderRadius:
-                                                BorderRadius.circular(400)),
-                                        child: const Icon(
-                                          Icons.person_4,
-                                          color: Colors.white,
-                                          size: 45,
-                                        ),
-                                      ),
-                                      SizedBox(
-                                        width: 20,
-                                      ),
-                                      Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.start,
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Text(
-                                            userName,
-                                            style: const TextStyle(
-                                                fontSize: 16,
-                                                letterSpacing: 1.2,
-                                                color: Colors.white,
-                                                fontFamily: 'ageo-bold'),
-                                          ),
-                                          SizedBox(
-                                            height: 6,
-                                          ),
-                                          Text(
-                                            finalData != null
-                                                ? GetTimeAgo.parse(finalData)
-                                                : 'N/A', // Display 'N/A' while loading
-                                            style: TextStyle(
-                                                color: Colors.white,
-                                                //fontFamily: 'ageo',
-                                                letterSpacing: 1.1,
-                                                fontSize: 9,
-                                                fontWeight: FontWeight.w400),
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                  const Padding(
-                                    padding: EdgeInsets.only(left: 84.0),
-                                    child: Divider(
-                                      color: Colors.white30,
-                                      thickness: 1.4,
-                                    ),
-                                  ),
-                                  SizedBox(
-                                    height: 10,
-                                  ),
-                                  Text(
-                                    userAnswer,
-                                    softWrap: true,
-                                    overflow: TextOverflow.clip,
-                                    maxLines: 8,
-                                    textAlign: TextAlign.justify,
-                                    style: TextStyle(
-                                        height: 1.25,
-                                        color: Colors.white,
-                                        fontFamily: 'NRT',
-                                        fontSize: 14),
-                                  ),
-                                  SizedBox(
-                                    height: 9,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              );
-            },
-          );
+  Future<void> fetchUserGroups() async {
+    try {
+      final groups = await getCurrentUserGroups();
+      setState(() {
+        userGroups = groups;
+      });
+    } catch (e) {
+      print('Error fetching user groups: $e');
+    }
+  }
+
+  Future<void> get_all_questions() async {
+    final firestore = FirebaseFirestore.instance;
+
+    // Reference to your Firestore collection
+    await Future.delayed(const Duration(seconds: 1));
+    final collectionReference = firestore
+        .collection(currentUser!.org)
+        .doc(currentUser!.city)
+        .collection('questions')
+        .where('groupIds',
+            arrayContainsAny: userGroups.isNotEmpty
+                ? userGroups
+                : ['']) // Ensure userGroups is not empty
+        .where('createdAt',
+            isGreaterThanOrEqualTo: DateTime.now().subtract(Duration(
+                hours: 24))) // Filter out questions older than 24 hours
+        .orderBy('createdAt', descending: false);
+    // Query the collection and get all documents
+    QuerySnapshot querySnapshot = await collectionReference.get();
+
+    // Initialize an empty map to store the document data
+    // _questionData = {};
+    // Loop through the documents and add them to the map
+    int index = 0;
+    _questionData = {};
+    querySnapshot.docs.forEach((document) {
+      final title = document.get("title") as String;
+      final timestamp = document.get('createdAt') as Timestamp;
+      final questionitself = document.get('question') as String;
+      final questiontype = document.get('type') as String;
+      final options = document.get('options') as List<dynamic>;
+      final groupname = document.get('groupname') as String;
+
+      ///
+      ///
+
+      final questionData = {
+        'title': title, // Replace with the actual data you want to pass
+        'createdAt': timestamp, // Replace with the actual data you want to pass
+        // Add more fields as needed
+        'question': questionitself,
+        'type': questiontype,
+        'options': options,
+        'groupname': groupname,
+      };
+
+      _questionData.addAll({index: questionData});
+
+      index++;
+    });
+    // Rename get_all_questions to _initializeQuestions and make it async
+
+//this is for ansawared questions checker
+
+    final firestore2 = FirebaseFirestore.instance;
+    await Future.delayed(const Duration(seconds: 1));
+    // Reference to your Firestore collection
+    final collectionReference2 = firestore2
+        .collection(currentUser!.org)
+        .doc(currentUser!.city)
+        .collection('answers')
+        .where('user_email',
+            isEqualTo: FirebaseAuth.instance.currentUser?.email);
+
+    // Query the collection and get all documents
+    QuerySnapshot querySnapshot2 = await collectionReference2.get();
+
+    // Initialize an empty map to store the document data
+    if (querySnapshot2.docs.isEmpty) {
+      return;
+    }
+
+    // Loop through the documents and add them to the map
+    querySnapshot2.docs.forEach((document) {
+      _questionData.removeWhere((key, value) {
+        return value['title'] == document.get("title") as String;
+      });
+
+      _questionData2 = _questionData;
+    });
+  }
+
+  // Function to retrieve current user's group IDs
+  Future<List<String>> getCurrentUserGroups() async {
+    List<String> userGroups = [];
+    try {
+      final User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        final DocumentSnapshot userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+
+        if (userDoc.exists) {
+          Map<String, dynamic>? groupsData = userDoc['groups'];
+
+          if (groupsData != null) {
+            // Add all group IDs to the userGroups list
+            userGroups.addAll(groupsData.keys);
+          }
         }
-      },
-    );
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+    return userGroups;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(seconds: 1));
+    fetchUserData();
+    fetchUserGroups();
+    getCurrentUserGroups();
+    // _initializeQuestions();
+  }
+
+  Future<void> _initializeQuestions() async {
+    Future.delayed(const Duration(seconds: 1));
+    await get_all_questions();
+    // Future.delayed(const Duration(seconds: 1));
+    if (mounted) {
+      // Check if the widget is still mounted
+      if (_questionData2.keys.isEmpty) {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => UserMainScreen(),
+          ),
+        );
+      } else {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(
+            builder: (context) => OpenQPage(
+              questionData: _questionData[_questionData2.keys.first],
+            ),
+          ),
+        );
+      }
+    }
   }
 }

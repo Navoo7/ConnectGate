@@ -2,6 +2,7 @@
 
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectgate/Screen/User_Side/Open_Q_Page.dart';
 import 'package:connectgate/Screen/User_Side/see_users_answers.dart';
 import 'package:connectgate/Services/auth_services.dart';
@@ -10,10 +11,9 @@ import 'package:connectgate/core/Check%20internet.dart';
 import 'package:connectgate/core/NoInternet.dart';
 import 'package:connectgate/models/admin_model.dart';
 import 'package:connectgate/models/user_model.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get_time_ago/get_time_ago.dart';
 import 'package:provider/provider.dart';
 
@@ -28,60 +28,6 @@ class _QuestionUserState extends State<QuestionUser> {
   List<String> userGroups = [];
   int currentQuestionIndex = 0; // Initialize it with 0
   MyAppUser? currentUser;
-  @override
-  void initState() {
-    super.initState();
-    Future.delayed(const Duration(seconds: 1));
-    SeendUpdate(context);
-    fetchUserGroups();
-    fetchUserData();
-  }
-
-  Future<void> fetchUserData() async {
-    AuthService authService = AuthService(context);
-    MyAppUser? userData = (await authService.getCurrentUser());
-    setState(() {
-      currentUser = userData;
-    });
-  }
-
-  Future<void> fetchUserGroups() async {
-    try {
-      final groups = await getCurrentUserGroups();
-      setState(() {
-        userGroups = groups;
-      });
-    } catch (e) {
-      print('Error fetching user groups: $e');
-    }
-  }
-
-// Function to retrieve current user's group IDs
-  Future<List<String>> getCurrentUserGroups() async {
-    List<String> userGroups = [];
-    try {
-      final User? user = FirebaseAuth.instance.currentUser;
-      if (user != null) {
-        final DocumentSnapshot userDoc = await FirebaseFirestore.instance
-            .collection('users')
-            .doc(user.uid)
-            .get();
-
-        if (userDoc.exists) {
-          Map<String, dynamic>? groupsData = userDoc['groups'];
-
-          if (groupsData != null) {
-            // Add all group IDs to the userGroups list
-            userGroups.addAll(groupsData.keys);
-          }
-        }
-      }
-    } catch (e) {
-      print('Error: $e');
-    }
-    return userGroups;
-  }
-
   // Future<bool> hasUserAnsweredQuestion(String questionTitle) async {
   //   try {
   //     final User? user = FirebaseAuth.instance.currentUser;
@@ -133,7 +79,9 @@ class _QuestionUserState extends State<QuestionUser> {
                         child: SizedBox(
                             height: 20,
                             width: 20,
-                            child: CircularProgressIndicator()));
+                            child: CircularProgressIndicator(
+                              color: Colors.black,
+                            )));
                   }
 
                   final questions = snapshot.data!.docs;
@@ -221,7 +169,9 @@ class _QuestionUserState extends State<QuestionUser> {
                                       child: SizedBox(
                                           height: 20,
                                           width: 20,
-                                          child: CircularProgressIndicator()));
+                                          child: CircularProgressIndicator(
+                                            color: Colors.black,
+                                          )));
                                 } else if (answerSnapshot.hasError) {
                                   // Handle error
                                   return Text('Error: ${answerSnapshot.error}');
@@ -427,6 +377,60 @@ class _QuestionUserState extends State<QuestionUser> {
             )
           : Nointernet();
     });
+  }
+
+  Future<void> fetchUserData() async {
+    AuthService authService = AuthService(context);
+    MyAppUser? userData = (await authService.getCurrentUser());
+    setState(() {
+      currentUser = userData;
+    });
+  }
+
+  Future<void> fetchUserGroups() async {
+    try {
+      final groups = await getCurrentUserGroups();
+      setState(() {
+        userGroups = groups;
+      });
+    } catch (e) {
+      print('Error fetching user groups: $e');
+    }
+  }
+
+// Function to retrieve current user's group IDs
+  Future<List<String>> getCurrentUserGroups() async {
+    List<String> userGroups = [];
+    try {
+      final User? user = FirebaseAuth.instance.currentUser;
+      if (user != null) {
+        final DocumentSnapshot userDoc = await FirebaseFirestore.instance
+            .collection('users')
+            .doc(user.uid)
+            .get();
+
+        if (userDoc.exists) {
+          Map<String, dynamic>? groupsData = userDoc['groups'];
+
+          if (groupsData != null) {
+            // Add all group IDs to the userGroups list
+            userGroups.addAll(groupsData.keys);
+          }
+        }
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+    return userGroups;
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    Future.delayed(const Duration(seconds: 1));
+    SeendUpdate(context);
+    fetchUserGroups();
+    fetchUserData();
   }
 }
 

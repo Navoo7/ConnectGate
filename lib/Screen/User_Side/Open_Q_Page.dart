@@ -2,13 +2,13 @@
 
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectgate/Screen/User_Side/see_users_answers.dart';
 import 'package:connectgate/Services/auth_services.dart';
 import 'package:connectgate/core/Check%20internet.dart';
 import 'package:connectgate/core/NoInternet.dart';
 import 'package:connectgate/models/user_model.dart';
 import 'package:flutter/material.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
 
 class OpenQPage extends StatefulWidget {
@@ -26,61 +26,6 @@ class _OpenQPageState extends State<OpenQPage> {
   TextEditingController answerController =
       TextEditingController(); // Controller for the answer
   MyAppUser? currentUser;
-  @override
-  void initState() {
-    super.initState();
-    // Call the method to get the current user's data from Firestore
-    fetchUserData();
-  }
-
-  Future<void> fetchUserData() async {
-    AuthService authService = AuthService(context);
-    MyAppUser? userData = (await authService.getCurrentUser());
-    setState(() {
-      currentUser = userData;
-    });
-  }
-
-  @override
-  void dispose() {
-    answerController.dispose(); // Dispose of the controller
-    super.dispose();
-  }
-
-  Future<void> saveAnswer(String answer) async {
-    //final User? user = FirebaseAuth.instance.currentUser;
-    AuthService authService = AuthService(context);
-    MyAppUser? userData = (await authService.getCurrentUser());
-
-    if (userData != null) {
-      final Map<String, dynamic> answerData = {
-        'title': widget.questionData['title'], // Replace with the actual title
-        'question':
-            widget.questionData['question'], // Replace with the actual question
-        'type': widget
-            .questionData['type'], // Replace with the actual question type
-        'group': widget.questionData[
-            'groupname'], //'GroupName', // Replace with the actual group name
-        'user_name': userData.name,
-        'user_email': userData.email,
-        'answer': answer,
-        'timestamp': FieldValue.serverTimestamp(),
-      };
-
-      try {
-        await FirebaseFirestore.instance
-            .collection(currentUser!.org)
-            .doc(currentUser!.city)
-            .collection('answers')
-            .add(answerData);
-        // Show a success message or perform any other actions as needed.
-      } catch (e) {
-        print('Error saving answer: $e');
-        // Handle the error, e.g., show an error message.
-      }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     final questionData = widget.questionData;
@@ -373,7 +318,64 @@ class _OpenQPageState extends State<OpenQPage> {
               )
             : Nointernet();
       }
-      return CircularProgressIndicator();
+      return CircularProgressIndicator(
+        color: Colors.black,
+      );
     });
+  }
+
+  @override
+  void dispose() {
+    answerController.dispose(); // Dispose of the controller
+    super.dispose();
+  }
+
+  Future<void> fetchUserData() async {
+    AuthService authService = AuthService(context);
+    MyAppUser? userData = (await authService.getCurrentUser());
+    setState(() {
+      currentUser = userData;
+    });
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    // Call the method to get the current user's data from Firestore
+    fetchUserData();
+  }
+
+  Future<void> saveAnswer(String answer) async {
+    //final User? user = FirebaseAuth.instance.currentUser;
+    AuthService authService = AuthService(context);
+    MyAppUser? userData = (await authService.getCurrentUser());
+
+    if (userData != null) {
+      final Map<String, dynamic> answerData = {
+        'title': widget.questionData['title'], // Replace with the actual title
+        'question':
+            widget.questionData['question'], // Replace with the actual question
+        'type': widget
+            .questionData['type'], // Replace with the actual question type
+        'group': widget.questionData[
+            'groupname'], //'GroupName', // Replace with the actual group name
+        'user_name': userData.name,
+        'user_email': userData.email,
+        'answer': answer,
+        'timestamp': FieldValue.serverTimestamp(),
+      };
+
+      try {
+        await FirebaseFirestore.instance
+            .collection(currentUser!.org)
+            .doc(currentUser!.city)
+            .collection('answers')
+            .add(answerData);
+        // Show a success message or perform any other actions as needed.
+      } catch (e) {
+        print('Error saving answer: $e');
+        // Handle the error, e.g., show an error message.
+      }
+    }
   }
 }
