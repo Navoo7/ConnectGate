@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectgate/Services/auth_services.dart';
 import 'package:connectgate/Widgets/answer_card.dart';
 import 'package:connectgate/core/Check%20internet.dart';
-import 'package:connectgate/core/NoInternet.dart';
+import 'package:connectgate/core/NoInternet.dart'; // Make sure this is defined elsewhere
 import 'package:connectgate/models/admin_model.dart';
 import 'package:csv/csv.dart';
 import 'package:flutter/material.dart';
@@ -28,13 +28,13 @@ class SeeAnswersAdmin extends StatefulWidget {
 }
 
 class _SeeAnswersAdminState extends State<SeeAnswersAdmin> {
-  String title = '';
-  String questionItself = '';
-  String questionType = '';
-  String groupName = '';
-
   final Map<String, List<String>> answersDataMap = {};
   MyAppAdmins? currentAdmin;
+
+  late String title;
+  late String questionItself;
+  late String questionType;
+  late String groupName;
 
   @override
   Widget build(BuildContext context) {
@@ -114,8 +114,10 @@ class _SeeAnswersAdminState extends State<SeeAnswersAdmin> {
                           ),
                           Container(
                             width: double.infinity,
-                            height: 650,
-                            child: AnswersCard(myTitle: title),
+                            height: 640,
+                            child: AnswersCard(
+                                myTitle: widget.questionData['title'] ??
+                                    'N/A'), // Pass the question ID
                           ),
                         ],
                       ),
@@ -139,7 +141,7 @@ class _SeeAnswersAdminState extends State<SeeAnswersAdmin> {
                 ),
               ],
             )
-          : Nointernet();
+          : Nointernet(); // Ensure this widget is defined or replace with appropriate widget
     });
   }
 
@@ -253,6 +255,11 @@ class _SeeAnswersAdminState extends State<SeeAnswersAdmin> {
   void initState() {
     super.initState();
     _initialize();
+
+    title = widget.questionData['title'] ?? '';
+    questionItself = widget.questionData['question'] ?? '';
+    questionType = widget.questionData['type'] ?? '';
+    groupName = widget.questionData['groupName'] ?? '';
   }
 
   Future<void> _initialize() async {
@@ -260,8 +267,6 @@ class _SeeAnswersAdminState extends State<SeeAnswersAdmin> {
     await fetchQuestionAndAnswers();
   }
 }
-
-
 
 
 

@@ -2,6 +2,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectgate/Services/auth_services.dart';
 import 'package:connectgate/models/admin_model.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 import 'package:get_time_ago/get_time_ago.dart';
 
 class AnswersCard extends StatefulWidget {
@@ -31,12 +32,18 @@ class _AnswersCardState extends State<AnswersCard> {
           return Center(child: Text('Error: ${snapshot.error}'));
         }
         if (!snapshot.hasData || snapshot.data!.isEmpty) {
-          return Center(child: Text('No data available for ${widget.myTitle}'));
+          return Center(
+              child: Text(
+            'No answers for  " ${widget.myTitle} "  yet. Please check back later.',
+            style: TextStyle(
+                color: Colors.black54,
+                fontSize: 12,
+                fontWeight: FontWeight.w400),
+          ));
         }
 
         final answers = snapshot.data!;
         return ListView.builder(
-          scrollDirection: Axis.vertical,
           itemCount: answers.length,
           itemBuilder: (context, index) {
             final answer = answers[index];
@@ -57,14 +64,22 @@ class _AnswersCardState extends State<AnswersCard> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
+                      SizedBox(
+                        height: 12,
+                      ),
                       _buildAnswerHeader(userName, finalData, answerId),
+                      Divider(
+                        thickness: 1.2,
+                        color: Colors.grey[700],
+                      ).paddingSymmetric(horizontal: 22),
                       _buildAnswerBody(userAnswer),
+                      SizedBox(height: 12),
                       if (_expandedStates[answerId] == true) ...[
                         _buildRepliesStream(answerId),
                         _buildReplyInput(answerId),
                       ],
                     ],
-                  ),
+                  ).paddingOnly(bottom: 8),
                 ),
               ),
             );
@@ -101,17 +116,20 @@ class _AnswersCardState extends State<AnswersCard> {
 
   Widget _buildAnswerBody(String userAnswer) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-      child: Text(
-        userAnswer,
-        softWrap: true,
-        overflow: TextOverflow.clip,
-        maxLines: 8,
-        style: const TextStyle(
-          height: 1.25,
-          color: Colors.white,
-          fontFamily: 'NRT',
-          fontSize: 14,
+      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 15),
+      child: Center(
+        child: Text(
+          userAnswer,
+          softWrap: true,
+          overflow: TextOverflow.clip,
+          textAlign: TextAlign.center,
+          maxLines: 8,
+          style: const TextStyle(
+            height: 1.25,
+            color: Colors.white,
+            fontFamily: 'NRT',
+            fontSize: 14,
+          ),
         ),
       ),
     );
@@ -124,13 +142,13 @@ class _AnswersCardState extends State<AnswersCard> {
       child: Row(
         children: [
           Container(
-            height: 65,
-            width: 65,
+            height: 55,
+            width: 55,
             decoration: BoxDecoration(
-              color: Colors.black,
+              color: Colors.black45,
               borderRadius: BorderRadius.circular(400),
             ),
-            child: const Icon(Icons.person_4, color: Colors.white, size: 45),
+            child: const Icon(Icons.person_4, color: Colors.white, size: 42),
           ),
           const SizedBox(width: 20),
           Column(
@@ -159,19 +177,42 @@ class _AnswersCardState extends State<AnswersCard> {
             ],
           ),
           const Spacer(),
-          IconButton(
-            icon: Icon(
-              _expandedStates[answerId] == true
-                  ? Icons.expand_less
-                  : Icons.expand_more,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              setState(() {
-                _expandedStates[answerId] =
-                    !(_expandedStates[answerId] ?? false);
-              });
-            },
+          Row(
+            children: [
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _expandedStates[answerId] =
+                        !(_expandedStates[answerId] ?? false);
+                  });
+                },
+                child: Icon(
+                  _expandedStates[answerId] == true
+                      ? Icons.message_outlined
+                      : Icons.message,
+                  color: Colors.white,
+                  size: 16,
+                ),
+              ),
+              SizedBox(
+                width: 12,
+              ),
+              GestureDetector(
+                onTap: () {
+                  setState(() {
+                    _expandedStates[answerId] =
+                        !(_expandedStates[answerId] ?? false);
+                  });
+                },
+                child: Icon(
+                  _expandedStates[answerId] == true
+                      ? Icons.expand_less
+                      : Icons.expand_more,
+                  color: Colors.white,
+                  size: 22,
+                ),
+              ),
+            ],
           ),
         ],
       ),
@@ -186,7 +227,7 @@ class _AnswersCardState extends State<AnswersCard> {
           .collection('answers')
           .doc(answerId)
           .collection('replies')
-          .orderBy('timestamp', descending: true)
+          .orderBy('timestamp', descending: false)
           .snapshots(),
       builder: (context, replySnapshot) {
         if (replySnapshot.connectionState == ConnectionState.waiting) {
@@ -264,6 +305,7 @@ class _AnswersCardState extends State<AnswersCard> {
           child: TextField(
             controller: _replyControllers[answerId],
             maxLines: 3,
+            style: const TextStyle(color: Colors.white),
             decoration: InputDecoration(
               hintText: 'Write your reply...',
               hintStyle: const TextStyle(color: Colors.white54),
@@ -277,7 +319,7 @@ class _AnswersCardState extends State<AnswersCard> {
           ),
         ),
         Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 12),
+          padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
           child: ElevatedButton(
             onPressed: () {
               if (_replyControllers[answerId] != null) {
@@ -294,14 +336,14 @@ class _AnswersCardState extends State<AnswersCard> {
 
   Future<List<QueryDocumentSnapshot>> _fetchAnswers() async {
     try {
-      final querySnapshot = await FirebaseFirestore.instance
+      final snapshot = await FirebaseFirestore.instance
           .collection(currentAdmin!.org)
           .doc(currentAdmin!.city)
           .collection('answers')
-          // .where('title', isEqualTo: widget.myTitle)
+          .where('title', isEqualTo: widget.myTitle)
           .orderBy('timestamp', descending: true)
           .get();
-      return querySnapshot.docs;
+      return snapshot.docs;
     } catch (e) {
       debugPrint('Error fetching answers: $e');
       return [];
@@ -309,15 +351,20 @@ class _AnswersCardState extends State<AnswersCard> {
   }
 
   Future<List<QueryDocumentSnapshot>> _initialize() async {
-    final authService = AuthService(context);
-    currentAdmin = await authService.getCurrentAdmin();
-
-    return currentAdmin != null ? _fetchAnswers() : [];
+    try {
+      currentAdmin = await AuthService(context).getCurrentAdmin();
+      if (currentAdmin == null) {
+        throw Exception('No admin found');
+      }
+      return _fetchAnswers();
+    } catch (e) {
+      debugPrint('Error initializing admin: $e');
+      return [];
+    }
   }
 
   void _initializeControllers(String answerId) {
-    if (!_expandedStates.containsKey(answerId)) {
-      _expandedStates[answerId] = false;
+    if (!_replyControllers.containsKey(answerId)) {
       _replyControllers[answerId] = TextEditingController();
     }
   }
