@@ -1,5 +1,3 @@
-// ignore_for_file: prefer_const_constructors, file_names, depend_on_referenced_packages, unused_element, avoid_print
-
 import 'dart:async';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -74,20 +72,7 @@ class _AnswearedAdminState extends State<AnswearedAdmin> {
                               color: Colors.white,
                             ),
                             centerTitle: true,
-                            title: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  'A N S W E R S'.tr,
-                                  style: const TextStyle(
-                                    color: Colors.black,
-                                    fontSize: 20,
-                                    fontFamily: 'ageo-bold',
-                                    letterSpacing: 2,
-                                  ),
-                                ),
-                              ],
-                            ),
+                            title: _buildAppBarTitle(),
                           ),
                         ),
                         SliverList(
@@ -254,6 +239,7 @@ class _AnswearedAdminState extends State<AnswearedAdmin> {
                             ),
                           ),
                         ),
+                        SliverFillRemaining(), // Added to fill remaining space
                       ],
                     );
                   },
@@ -304,7 +290,282 @@ class _AnswearedAdminState extends State<AnswearedAdmin> {
     });
     fetchUserData();
   }
+
+  Widget _buildAppBarTitle() {
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        // Determine if the SliverAppBar is collapsed or expanded
+        final isCollapsed = constraints.biggest.height <= kToolbarHeight;
+        return Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            if (isCollapsed)
+              Icon(Icons.message,
+                  color: Colors.black), // Show icon when collapsed
+            SizedBox(width: 8),
+            Text(
+              'A N S W E R S'.tr,
+              style: TextStyle(
+                color: Colors.black,
+                fontSize:
+                    isCollapsed ? 18 : 20, // Adjust title size based on state
+                fontFamily: 'ageo-bold',
+                letterSpacing: 2,
+              ),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

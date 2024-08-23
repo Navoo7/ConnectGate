@@ -44,9 +44,11 @@ class _SeeAnswersAdminState extends State<SeeAnswersAdmin> {
               body: CustomScrollView(
                 slivers: [
                   SliverAppBar(
+                    automaticallyImplyLeading: false,
                     expandedHeight: 245,
                     pinned: true,
                     flexibleSpace: FlexibleSpaceBar(
+                      collapseMode: CollapseMode.pin,
                       background: Container(
                         decoration: BoxDecoration(
                           color: Colors.black,
@@ -57,10 +59,7 @@ class _SeeAnswersAdminState extends State<SeeAnswersAdmin> {
                         ),
                         child: Padding(
                           padding: const EdgeInsets.only(
-                            top: 60,
-                            left: 22,
-                            right: 20,
-                          ),
+                              top: 60, left: 22, right: 20),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
@@ -75,14 +74,13 @@ class _SeeAnswersAdminState extends State<SeeAnswersAdmin> {
                                       color: Colors.white,
                                     ),
                                   ),
-                                  Center(
-                                    child: Text(
-                                      title,
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontSize: 12,
-                                        fontFamily: 'NRT',
-                                      ),
+                                  Text(' '),
+                                  Text(
+                                    title,
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                      fontFamily: 'NRT',
                                     ),
                                   ),
                                 ],
@@ -117,6 +115,7 @@ class _SeeAnswersAdminState extends State<SeeAnswersAdmin> {
                         ),
                       ),
                     ),
+                    // Add a bottom widget to customize appearance when minimized
                   ),
                   SliverToBoxAdapter(
                     child: AnswersCard(

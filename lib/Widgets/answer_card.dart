@@ -40,12 +40,16 @@ class _AnswersCardState extends State<AnswersCard> {
                 fontSize: 12,
                 fontWeight: FontWeight.w400,
               ),
-            ),
+            ).paddingSymmetric(vertical: 165),
           );
         }
 
         final answersWithCounts = snapshot.data!;
+
         return ListView.builder(
+          shrinkWrap: true, // Use shrinkWrap to limit the ListView's height
+          physics:
+              ClampingScrollPhysics(), // Prevents the ListView from expanding infinitely
           itemCount: answersWithCounts.length,
           itemBuilder: (context, index) {
             final answerWithCount = answersWithCounts[index];
@@ -77,10 +81,7 @@ class _AnswersCardState extends State<AnswersCard> {
                       _buildAnswerBody(userAnswer),
                       SizedBox(height: 10),
                       if (_expandedStates[answerId] == true) ...[
-                        Container(
-                          height: 200, // Adjust height as needed
-                          child: _buildRepliesStream(answerId),
-                        ),
+                        _buildRepliesStream(answerId),
                         _buildReplyInput(answerId),
                       ],
                       SizedBox(height: 1),
@@ -122,8 +123,8 @@ class _AnswersCardState extends State<AnswersCard> {
         'admin_name': currentAdmin!.name,
         'timestamp': FieldValue.serverTimestamp(),
       });
-      await _updateReplyCount(
-          answerId); // Update reply count after adding a reply
+      // Update the reply count
+      await _updateReplyCount(answerId);
     } catch (e) {
       debugPrint('Error adding reply: $e');
     }
@@ -183,24 +184,29 @@ class _AnswersCardState extends State<AnswersCard> {
                 finalData != null ? GetTimeAgo.parse(finalData) : 'N/A',
                 style: const TextStyle(
                   color: Colors.white,
-                  letterSpacing: 1.0,
-                  fontSize: 13,
-                  fontFamily: 'ageo',
+                  letterSpacing: 1.1,
+                  fontSize: 9,
+                  fontWeight: FontWeight.w400,
                 ),
+                overflow: TextOverflow.ellipsis,
               ),
+              const SizedBox(height: 8),
             ],
           ),
           const Spacer(),
-          IconButton(
-            onPressed: () => setState(() {
-              _expandedStates[answerId] = !(_expandedStates[answerId] ?? false);
-            }),
-            icon: Icon(
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                _expandedStates[answerId] =
+                    !(_expandedStates[answerId] ?? false);
+              });
+            },
+            child: Icon(
               _expandedStates[answerId] == true
-                  ? Icons.keyboard_arrow_up
-                  : Icons.keyboard_arrow_down,
+                  ? Icons.expand_less
+                  : Icons.expand_more,
               color: Colors.white,
-              size: 30,
+              size: 24,
             ),
           ),
         ],
@@ -216,8 +222,7 @@ class _AnswersCardState extends State<AnswersCard> {
           .collection('answers')
           .doc(answerId)
           .collection('replies')
-          .orderBy('timestamp',
-              descending: true) // Ensure the index for this query
+          .orderBy('timestamp', descending: true)
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
@@ -229,62 +234,65 @@ class _AnswersCardState extends State<AnswersCard> {
         if (!snapshot.hasData || snapshot.data!.docs.isEmpty) {
           return Padding(
             padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-            child: Text(
-              'No replies yet.',
-              style: const TextStyle(
-                color: Colors.white54,
-                fontSize: 14,
-                fontFamily: 'ageo',
+            child: Center(
+              child: Text(
+                'No replies yet.',
+                style: const TextStyle(
+                  color: Colors.white,
+                  fontSize: 12,
+                  fontFamily: 'ageo',
+                ),
               ),
             ),
           );
         }
 
         final replies = snapshot.data!.docs;
-
         return ListView.builder(
+          shrinkWrap: true,
+          physics: NeverScrollableScrollPhysics(), // Prevents nested scrolling
           itemCount: replies.length,
           itemBuilder: (context, index) {
             final reply = replies[index];
             final replyText = reply.get('reply') as String? ?? 'No reply';
-            final replyAdminName =
-                reply.get('admin_name') as String? ?? 'Unknown';
-            final replyTimestamp = reply.get('timestamp') as Timestamp?;
-            final replyDate = replyTimestamp?.toDate();
+            final adminName = reply.get('admin_name') as String? ?? 'Admin';
+            final timestamp = reply.get('timestamp') as Timestamp?;
+            final replyDate = timestamp?.toDate();
 
             return Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
+              padding: const EdgeInsets.only(
+                  top: 4.0, left: 20, right: 20, bottom: 6),
               child: Container(
-                color: Color.fromARGB(221, 20, 20, 20),
                 padding: const EdgeInsets.all(10),
+                decoration: BoxDecoration(
+                  color: Colors.black45,
+                  borderRadius: BorderRadius.circular(12),
+                ),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Text(
-                      replyAdminName,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontFamily: 'ageo-bold',
-                      ),
+                    Row(
+                      children: [
+                        const Icon(Icons.person, color: Colors.white),
+                        const SizedBox(width: 10),
+                        Text(
+                          adminName,
+                          style: const TextStyle(color: Colors.white),
+                        ),
+                        const Spacer(),
+                        Text(
+                          replyDate != null
+                              ? GetTimeAgo.parse(replyDate)
+                              : 'N/A',
+                          style: const TextStyle(
+                              color: Colors.white54, fontSize: 10),
+                        ),
+                      ],
                     ),
                     const SizedBox(height: 6),
                     Text(
                       replyText,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 14,
-                        fontFamily: 'ageo',
-                      ),
-                    ),
-                    const SizedBox(height: 6),
-                    Text(
-                      replyDate != null ? GetTimeAgo.parse(replyDate) : 'N/A',
-                      style: const TextStyle(
-                        color: Colors.white54,
-                        fontSize: 12,
-                        fontFamily: 'ageo',
-                      ),
+                      style: const TextStyle(color: Colors.white),
                     ),
                   ],
                 ),
@@ -298,119 +306,177 @@ class _AnswersCardState extends State<AnswersCard> {
 
   Widget _buildReplyCount(int replyCount, String answerId) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.only(left: 20, right: 20, bottom: 8, top: 7),
       child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Text(
-            '$replyCount replies',
-            style: const TextStyle(
-              color: Colors.white54,
-              fontSize: 12,
-              fontFamily: 'ageo',
-            ),
+          Row(
+            children: [
+              Icon(Icons.comment, color: Colors.white54, size: 14.5),
+              SizedBox(width: 8),
+              Text(
+                'Replies: $replyCount',
+                style: const TextStyle(color: Colors.white54, fontSize: 12),
+              ),
+            ],
           ),
+          if (_expandedStates[answerId] == true) ...[
+            GestureDetector(
+              onTap: () {
+                setState(() {
+                  _expandedStates[answerId] =
+                      !(_expandedStates[answerId] ?? false);
+                });
+              },
+              child: Icon(
+                _expandedStates[answerId] == true
+                    ? Icons.expand_less
+                    : Icons.expand_more,
+                color: Colors.white,
+                size: 24,
+              ),
+            ),
+          ],
         ],
       ),
     );
   }
 
   Widget _buildReplyInput(String answerId) {
-    final replyController = _replyControllers[answerId];
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 8),
-      child: Row(
-        children: [
-          Expanded(
-            child: TextField(
-              controller: replyController,
-              style: const TextStyle(color: Colors.white),
-              decoration: InputDecoration(
-                hintText: 'Write a reply...',
-                hintStyle: const TextStyle(color: Colors.white54),
-                filled: true,
-                fillColor: Colors.black26,
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
-                ),
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(left: 18, right: 18, top: 12),
+          child: TextField(
+            controller: _replyControllers[answerId],
+            maxLines: 3,
+            style: const TextStyle(color: Colors.white),
+            decoration: InputDecoration(
+              hintText: 'Write your reply...',
+              hintStyle: const TextStyle(color: Colors.white54),
+              filled: true,
+              fillColor: Colors.black26,
+              border: OutlineInputBorder(
+                borderRadius: BorderRadius.circular(12),
+                borderSide: BorderSide.none,
               ),
             ),
           ),
-          IconButton(
-            onPressed: () async {
-              final reply = replyController?.text ?? '';
-              if (reply.isNotEmpty) {
-                await _addReply(answerId, reply);
-                replyController?.clear();
+        ),
+        Padding(
+          padding:
+              const EdgeInsets.only(left: 20, right: 20, top: 16, bottom: 2),
+          child: ElevatedButton(
+            onPressed: () {
+              if (_replyControllers[answerId] != null) {
+                _addReply(answerId, _replyControllers[answerId]!.text);
+                _replyControllers[answerId]!.clear();
+                setState(() {}); // Refresh UI to show updated reply count
               }
             },
-            icon: const Icon(Icons.send, color: Colors.white),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.white70,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+            ),
+            child: const Text(
+              'Reply',
+              style: TextStyle(color: Colors.black, fontSize: 13.5),
+            ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
   Future<List<Map<String, dynamic>>> _fetchAnswers() async {
-    if (currentAdmin == null) return [];
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection(currentAdmin!.org)
+          .doc(currentAdmin!.city)
+          .collection('answers')
+          .where('title', isEqualTo: widget.myTitle)
+          .orderBy('timestamp', descending: true)
+          .get();
 
-    final snapshot = await FirebaseFirestore.instance
-        .collection(currentAdmin!.org)
-        .doc(currentAdmin!.city)
-        .collection('answers')
-        .where('question',
-            isEqualTo: widget.myTitle) // Ensure the index for this query
-        .orderBy('timestamp',
-            descending: true) // Ensure the index for this query
-        .get();
+      final answers = snapshot.docs;
+      final List<Map<String, dynamic>> answersWithReplyCounts = [];
 
-    final List<Map<String, dynamic>> answersWithCounts = [];
-    for (var doc in snapshot.docs) {
-      final answerId = doc.id;
-      final replyCount = await _getReplyCount(answerId);
-      answersWithCounts.add({
-        'document': doc,
-        'replyCount': replyCount,
-      });
+      for (var answer in answers) {
+        final answerId = answer.id;
+        final replyCount = await _getReplyCount(answerId);
+        answersWithReplyCounts.add({
+          'document': answer,
+          'replyCount': replyCount,
+        });
+      }
+
+      return answersWithReplyCounts;
+    } catch (e) {
+      debugPrint('Error fetching answers: $e');
+      return [];
     }
-    return answersWithCounts;
   }
 
-  Future<int?> _getReplyCount(String answerId) async {
-    if (currentAdmin == null) return 0;
-    final snapshot = await FirebaseFirestore.instance
-        .collection(currentAdmin!.org)
-        .doc(currentAdmin!.city)
-        .collection('answers')
-        .doc(answerId)
-        .collection('replies')
-        .count()
-        .get();
-    return snapshot.count;
+  Future<int> _getReplyCount(String answerId) async {
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection(currentAdmin!.org)
+          .doc(currentAdmin!.city)
+          .collection('answers')
+          .doc(answerId)
+          .collection('replies')
+          .get();
+      return snapshot.docs.length;
+    } catch (e) {
+      debugPrint('Error fetching reply count: $e');
+      return 0;
+    }
   }
 
   Future<List<Map<String, dynamic>>> _initialize() async {
-    currentAdmin = await AuthService(context).getCurrentAdmin();
-    return _fetchAnswers();
+    try {
+      currentAdmin = await AuthService(context).getCurrentAdmin();
+      if (currentAdmin == null) {
+        throw Exception('No admin found');
+      }
+      return _fetchAnswers();
+    } catch (e) {
+      debugPrint('Error initializing admin: $e');
+      return [];
+    }
   }
 
-  Future<void> _initializeControllers(String answerId) async {
+  void _initializeControllers(String answerId) {
     if (!_replyControllers.containsKey(answerId)) {
       _replyControllers[answerId] = TextEditingController();
     }
   }
 
   Future<void> _updateReplyCount(String answerId) async {
-    if (currentAdmin == null) return;
-    final replyCount = await _getReplyCount(answerId);
-    await FirebaseFirestore.instance
-        .collection(currentAdmin!.org)
-        .doc(currentAdmin!.city)
-        .collection('answers')
-        .doc(answerId)
-        .update({'replyCount': replyCount});
+    try {
+      final replySnapshot = await FirebaseFirestore.instance
+          .collection(currentAdmin!.org)
+          .doc(currentAdmin!.city)
+          .collection('answers')
+          .doc(answerId)
+          .collection('replies')
+          .get();
+      final replyCount = replySnapshot.docs.length;
+
+      await FirebaseFirestore.instance
+          .collection(currentAdmin!.org)
+          .doc(currentAdmin!.city)
+          .collection('answers')
+          .doc(answerId)
+          .update({'replyCount': replyCount});
+    } catch (e) {
+      debugPrint('Error updating reply count: $e');
+    }
   }
 }
+
 
 
 
