@@ -222,7 +222,7 @@ class _AnswersCardState extends State<AnswersCard> {
           .collection('answers')
           .doc(answerId)
           .collection('replies')
-          .orderBy('timestamp', descending: true)
+          .orderBy('timestamp', descending: false)
           .snapshots(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {

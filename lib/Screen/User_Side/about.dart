@@ -2,16 +2,16 @@
 
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectgate/Screen/User_Side/User_Main_Screen.dart';
 import 'package:connectgate/core/CeckForUpdate.dart';
 import 'package:connectgate/core/Check%20internet.dart';
 import 'package:connectgate/core/MyImages.dart';
 import 'package:connectgate/core/NoInternet.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:connectgate/Screen/User_Side/User_Main_Screen.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class About extends StatefulWidget {
   const About({super.key});
@@ -22,27 +22,6 @@ class About extends StatefulWidget {
 
 class _AboutState extends State<About> {
   var navid = "";
-
-  @override
-  void initState() {
-    Future.delayed(const Duration(seconds: 1));
-
-    getdata();
-    // SeendUpdate(context);
-    super.initState();
-  }
-
-  getdata() {
-    FirebaseFirestore.instance
-        .collection('About')
-        .doc('Developer')
-        .get()
-        .then((value) {
-      setState(() {
-        navid = value.data()!['navid'];
-      });
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -90,14 +69,13 @@ class _AboutState extends State<About> {
                                   Padding(
                                     padding: const EdgeInsets.only(
                                       top: 5,
-                                      right: 20,
-                                      left: 8,
+                                      right: 10,
+                                      left: 75,
                                     ),
                                     child: Row(
                                       children: [
                                         Image.asset(
                                           MyImage.connectGate2,
-                                          //connectgate 2
                                           scale: 1.2,
                                         ),
                                       ],
@@ -108,80 +86,80 @@ class _AboutState extends State<About> {
                                         EdgeInsets.only(top: 30, right: 20),
                                     child: Column(
                                       children: [
-                                        GestureDetector(
-                                          onTap: () {
-                                            launch(
-                                                'https://www.linkedin.com/in/navid-h-a2775b20a');
-                                          },
-                                          child: Container(
-                                            width: 95.0,
-                                            height: 95.0,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              border: Border.all(
-                                                color: Colors.black87,
-                                                width: 3.0,
-                                              ),
-                                            ),
-                                            child: CircleAvatar(
-                                                radius: 50,
-                                                backgroundColor: Colors.white,
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        const BorderRadius.all(
-                                                            Radius.circular(
-                                                                50)),
-                                                    image: DecorationImage(
-                                                      image:
-                                                          NetworkImage(navid),
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                  ),
-                                                )),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 1,
-                                        ),
-                                        Text(
-                                          'Navid Hishyar Hassan'.tr,
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 10,
-                                              fontFamily: 'NRT',
-                                              letterSpacing: ln2,
-                                              fontWeight: FontWeight.w600),
-                                        ),
-                                        // Text(
-                                        //   'Developer',
+                                        // GestureDetector(
+                                        //   onTap: () {
+                                        //     launch(
+                                        //         'https://www.linkedin.com/in/navid-h-a2775b20a');
+                                        //   },
+                                        //   child: Container(
+                                        //     width: 95.0,
+                                        //     height: 95.0,
+                                        //     decoration: BoxDecoration(
+                                        //       shape: BoxShape.circle,
+                                        //       border: Border.all(
+                                        //         color: Colors.black87,
+                                        //         width: 3.0,
+                                        //       ),
+                                        //     ),
+                                        //     child: CircleAvatar(
+                                        //         radius: 50,
+                                        //         backgroundColor: Colors.white,
+                                        //         child: Container(
+                                        //           decoration: BoxDecoration(
+                                        //             borderRadius:
+                                        //                 const BorderRadius.all(
+                                        //                     Radius.circular(
+                                        //                         50)),
+                                        //             image: DecorationImage(
+                                        //               image:
+                                        //                   NetworkImage(navid),
+                                        //               fit: BoxFit.cover,
+                                        //             ),
+                                        //           ),
+                                        //         )),
+                                        //   ),
+                                        // ),
+                                        // SizedBox(
+                                        //   height: 1,
+                                        // ),
+                                        //  Text(
+                                        //   'Navid Hishyar Hassan'.tr,
                                         //   style: TextStyle(
                                         //       color: Colors.black,
-                                        //       fontSize: 14,
-                                        //       fontWeight: FontWeight.w400),
+                                        //       fontSize: 10,
+                                        //       fontFamily: 'NRT',
+                                        //       letterSpacing: ln2,
+                                        //       fontWeight: FontWeight.w600),
                                         // ),
-                                        SizedBox(
-                                          height: 1,
-                                        ),
-                                        InkWell(
-                                          onTap: () {
-                                            launch(
-                                                'https://www.linkedin.com/in/navid-h-a2775b20a');
-                                          },
-                                          child: Container(
-                                            width: 12,
-                                            height: 12,
-                                            child:
-                                                Image.asset(MyImage.linkedin),
-                                          ),
-                                        ),
+                                        // // Text(
+                                        // //   'Developer',
+                                        // //   style: TextStyle(
+                                        // //       color: Colors.black,
+                                        // //       fontSize: 14,
+                                        // //       fontWeight: FontWeight.w400),
+                                        // // ),
+                                        // SizedBox(
+                                        //   height: 1,
+                                        // ),
+                                        // InkWell(
+                                        //   onTap: () {
+                                        //     launch(
+                                        //         'https://www.linkedin.com/in/navid-h-a2775b20a');
+                                        //   },
+                                        //   child: Container(
+                                        //     width: 12,
+                                        //     height: 12,
+                                        //     child:
+                                        //         Image.asset(MyImage.linkedin),
+                                        //   ),
+                                        // ),
                                       ],
                                     ),
                                   ),
                                 ],
                               ),
                               const Padding(
-                                padding: EdgeInsets.only(right: 128.0),
+                                padding: EdgeInsets.only(right: 90, left: 75),
                                 child: Divider(
                                   color: Colors.black,
                                   thickness: 1.4,
@@ -236,10 +214,10 @@ class _AboutState extends State<About> {
                                   padding:
                                       const EdgeInsets.only(top: 12, left: 28),
                                   child: InkWell(
-                                      onTap: () {
-                                        launch(
-                                            'https://www.instagram.com/navoo_7/');
-                                      },
+                                      // onTap: () {
+                                      //   launch(
+                                      //       'https://www.instagram.com/navoo_7/');
+                                      // },
                                       child: Container(
                                           width: 18,
                                           height: 18,
@@ -250,10 +228,10 @@ class _AboutState extends State<About> {
                                   padding:
                                       const EdgeInsets.only(top: 12, left: 5),
                                   child: InkWell(
-                                      onTap: () {
-                                        launch(
-                                            'https://web.facebook.com/navedbarwary');
-                                      },
+                                      // onTap: () {
+                                      //   launch(
+                                      //       'https://web.facebook.com/navedbarwary');
+                                      // },
                                       child: Container(
                                           width: 16,
                                           height: 16,
@@ -264,10 +242,10 @@ class _AboutState extends State<About> {
                                   padding:
                                       const EdgeInsets.only(top: 12, left: 49),
                                   child: InkWell(
-                                      onTap: () {
-                                        launch(
-                                            'https://www.snapchat.com/add/navoo-hushyar');
-                                      },
+                                      // onTap: () {
+                                      //   launch(
+                                      //       'https://www.snapchat.com/add/navoo-hushyar');
+                                      // },
                                       child: Container(
                                           width: 18,
                                           height: 18,
@@ -286,5 +264,26 @@ class _AboutState extends State<About> {
             )
           : Nointernet();
     });
+  }
+
+  getdata() {
+    FirebaseFirestore.instance
+        .collection('About')
+        .doc('Developer')
+        .get()
+        .then((value) {
+      setState(() {
+        navid = value.data()!['navid'];
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    Future.delayed(const Duration(seconds: 1));
+
+    getdata();
+    // SeendUpdate(context);
+    super.initState();
   }
 }

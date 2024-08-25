@@ -2,6 +2,7 @@
 
 import 'dart:math';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectgate/Screen/Admin_Side/Admin_Main_Screen.dart';
 import 'package:connectgate/core/CeckForUpdate.dart';
 import 'package:connectgate/core/Check%20internet.dart';
@@ -9,9 +10,8 @@ import 'package:connectgate/core/MyImages.dart';
 import 'package:connectgate/core/NoInternet.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:provider/provider.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class AboutAdmin extends StatefulWidget {
   const AboutAdmin({super.key});
@@ -21,27 +21,7 @@ class AboutAdmin extends StatefulWidget {
 }
 
 class _AboutAdminState extends State<AboutAdmin> {
-  getdata() {
-    FirebaseFirestore.instance
-        .collection('About')
-        .doc('Developer')
-        .get()
-        .then((value) {
-      setState(() {
-        navid = value.data()!['navid'];
-      });
-    });
-  }
-
   var navid = "";
-
-  @override
-  void initState() {
-    // SeendUpdate(context);
-    Future.delayed(const Duration(seconds: 1));
-    getdata();
-    super.initState();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -89,8 +69,8 @@ class _AboutAdminState extends State<AboutAdmin> {
                                   Padding(
                                     padding: const EdgeInsets.only(
                                       top: 5,
-                                      right: 20,
-                                      left: 8,
+                                      right: 10,
+                                      left: 75,
                                     ),
                                     child: Row(
                                       children: [
@@ -103,81 +83,81 @@ class _AboutAdminState extends State<AboutAdmin> {
                                   ),
                                   Padding(
                                     padding:
-                                        EdgeInsets.only(top: 30, right: 20),
+                                        EdgeInsets.only(top: 100, right: 20),
                                     child: Column(
                                       children: [
-                                        GestureDetector(
-                                          onTap: () {
-                                            launch(
-                                                'https://www.linkedin.com/in/navid-h-a2775b20a');
-                                          },
-                                          child: Container(
-                                            width: 95.0,
-                                            height: 95.0,
-                                            decoration: BoxDecoration(
-                                              shape: BoxShape.circle,
-                                              border: Border.all(
-                                                color: Colors.black87,
-                                                width: 3.0,
-                                              ),
-                                            ),
-                                            child: CircleAvatar(
-                                                radius: 50,
-                                                backgroundColor: Colors.white,
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        const BorderRadius.all(
-                                                            Radius.circular(
-                                                                50)),
-                                                    image: DecorationImage(
-                                                      image:
-                                                          NetworkImage(navid),
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                  ),
-                                                )),
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 4,
-                                        ),
-                                        Text(
-                                          'Navid Hishyar Hassan'.tr,
-                                          style: TextStyle(
-                                              color: Colors.black,
-                                              fontSize: 10,
-                                              fontFamily: 'NRT',
-                                              letterSpacing: ln2,
-                                              fontWeight: FontWeight.w600),
-                                        ),
+                                        // GestureDetector(
+                                        //   onTap: () {
+                                        //     launch(
+                                        //         'https://www.linkedin.com/in/navid-h-a2775b20a');
+                                        //   },
+                                        //   child: Container(
+                                        //     width: 95.0,
+                                        //     height: 95.0,
+                                        //     decoration: BoxDecoration(
+                                        //       shape: BoxShape.circle,
+                                        //       border: Border.all(
+                                        //         color: Colors.black87,
+                                        //         width: 3.0,
+                                        //       ),
+                                        //     ),
+                                        //     child: CircleAvatar(
+                                        //         radius: 50,
+                                        //         backgroundColor: Colors.white,
+                                        //         child: Container(
+                                        //           decoration: BoxDecoration(
+                                        //             borderRadius:
+                                        //                 const BorderRadius.all(
+                                        //                     Radius.circular(
+                                        //                         50)),
+                                        //             image: DecorationImage(
+                                        //               image:
+                                        //                   NetworkImage(navid),
+                                        //               fit: BoxFit.cover,
+                                        //             ),
+                                        //           ),
+                                        //         )),
+                                        //   ),
+                                        // ),
+                                        // SizedBox(
+                                        //   height: 4,
+                                        // ),
                                         // Text(
-                                        //   'Developer',
+                                        //   'Navid Hishyar Hassan'.tr,
                                         //   style: TextStyle(
                                         //       color: Colors.black,
-                                        //       fontSize: 14,
-                                        //       fontWeight: FontWeight.w400),
+                                        //       fontSize: 10,
+                                        //       fontFamily: 'NRT',
+                                        //       letterSpacing: ln2,
+                                        //       fontWeight: FontWeight.w600),
                                         // ),
-                                        SizedBox(
-                                          height: 4,
-                                        ),
-                                        InkWell(
-                                            onTap: () {
-                                              launch(
-                                                  'https://www.linkedin.com/in/navid-h-a2775b20a');
-                                            },
-                                            child: Container(
-                                                width: 12,
-                                                height: 12,
-                                                child: Image.asset(
-                                                    MyImage.linkedin))),
+                                        // // Text(
+                                        // //   'Developer',
+                                        // //   style: TextStyle(
+                                        // //       color: Colors.black,
+                                        // //       fontSize: 14,
+                                        // //       fontWeight: FontWeight.w400),
+                                        // // ),
+                                        // SizedBox(
+                                        //   height: 4,
+                                        // ),
+                                        // InkWell(
+                                        //     onTap: () {
+                                        //       launch(
+                                        //           'https://www.linkedin.com/in/navid-h-a2775b20a');
+                                        //     },
+                                        //     child: Container(
+                                        //         width: 12,
+                                        //         height: 12,
+                                        //         child: Image.asset(
+                                        //             MyImage.linkedin))),
                                       ],
                                     ),
                                   ),
                                 ],
                               ),
                               const Padding(
-                                padding: EdgeInsets.only(right: 128.0),
+                                padding: EdgeInsets.only(right: 90, left: 75),
                                 child: Divider(
                                   color: Colors.black,
                                   thickness: 1.4,
@@ -233,10 +213,10 @@ class _AboutAdminState extends State<AboutAdmin> {
                                   padding:
                                       const EdgeInsets.only(top: 12, left: 28),
                                   child: InkWell(
-                                      onTap: () {
-                                        launch(
-                                            'https://www.instagram.com/navoo_7/');
-                                      },
+                                      // onTap: () {
+                                      //   launch(
+                                      //       'https://www.instagram.com/navoo_7/');
+                                      // },
                                       child: Container(
                                           width: 18,
                                           height: 18,
@@ -247,10 +227,10 @@ class _AboutAdminState extends State<AboutAdmin> {
                                   padding:
                                       const EdgeInsets.only(top: 12, left: 5),
                                   child: InkWell(
-                                      onTap: () {
-                                        launch(
-                                            'https://web.facebook.com/navedbarwary');
-                                      },
+                                      // onTap: () {
+                                      //   launch(
+                                      //       'https://web.facebook.com/navedbarwary');
+                                      // },
                                       child: Container(
                                           width: 16,
                                           height: 16,
@@ -261,10 +241,10 @@ class _AboutAdminState extends State<AboutAdmin> {
                                   padding:
                                       const EdgeInsets.only(top: 12, left: 49),
                                   child: InkWell(
-                                      onTap: () {
-                                        launch(
-                                            'https://www.snapchat.com/add/navoo-hushyar');
-                                      },
+                                      // onTap: () {
+                                      //   launch(
+                                      //       'https://www.snapchat.com/add/navoo-hushyar');
+                                      // },
                                       child: Container(
                                           width: 18,
                                           height: 18,
@@ -283,5 +263,25 @@ class _AboutAdminState extends State<AboutAdmin> {
             )
           : Nointernet();
     });
+  }
+
+  getdata() {
+    FirebaseFirestore.instance
+        .collection('About')
+        .doc('Developer')
+        .get()
+        .then((value) {
+      setState(() {
+        navid = value.data()!['navid'];
+      });
+    });
+  }
+
+  @override
+  void initState() {
+    // SeendUpdate(context);
+    Future.delayed(const Duration(seconds: 1));
+    getdata();
+    super.initState();
   }
 }
