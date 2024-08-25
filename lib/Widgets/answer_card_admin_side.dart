@@ -26,7 +26,9 @@ class _AnswersCardState extends State<AnswersCard> {
       future: _futureAnswers,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator(color: Colors.black));
+          return Center(
+              child: CircularProgressIndicator(color: Colors.black)
+                  .paddingSymmetric(vertical: 165));
         }
         if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));

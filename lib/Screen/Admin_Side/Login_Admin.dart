@@ -30,22 +30,6 @@ class _LoginAdminState extends State<LoginAdmin> {
 
   final _formKey = GlobalKey<FormState>();
   MyAppAdmins? currentAdmin;
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   Future.delayed(const Duration(seconds: 1));
-
-  //   SeendUpdate(context);
-  // }
-
-  @override
-  void dispose() {
-    _emailControler.dispose();
-    _passwordControler.dispose();
-
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Consumer<connectivitycheck>(builder: (context, modle, child) {
@@ -340,32 +324,80 @@ class _LoginAdminState extends State<LoginAdmin> {
                                 } else if (_passwordControler.text.length < 8) {
                                   pass_error_lenght = true;
                                 } else {
-                                  // Perform the admin login
-                                  AuthService authService =
-                                      AuthService(context);
-                                  MyAppAdmins? admin =
-                                      await authService.signInAdmin(
-                                    email: _emailControler.text.trim(),
-                                    password: _passwordControler.text.trim(),
-                                  );
-
-                                  if (admin != null) {
-                                    setState(() {
-                                      currentAdmin = admin;
-                                    });
-
-                                    // Redirect to admin main screen if login is successful
-                                    Navigator.pushAndRemoveUntil(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            const AdminMainScreen(),
-                                      ),
-                                      (route) => true,
+                                  try {
+                                    AuthService authService =
+                                        AuthService(context);
+                                    MyAppAdmins? admin =
+                                        await authService.signInAdmin(
+                                      email: _emailControler.text.trim(),
+                                      password: _passwordControler.text.trim(),
                                     );
+
+                                    if (admin != null) {
+                                      setState(() {
+                                        currentAdmin = admin;
+                                      });
+
+                                      Navigator.pushAndRemoveUntil(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const AdminMainScreen(),
+                                        ),
+                                        (route) => false,
+                                      );
+                                    } else {
+                                      _showSnackBar(
+                                          "Login failed. Please check your credentials.");
+                                    }
+                                  } catch (e) {
+                                    print("Error during login: $e");
+                                    _showSnackBar(
+                                        "An error occurred. Please try again.");
                                   }
                                 }
                               },
+
+                              // onPressed: () async {
+                              //   setState(() {
+                              //     email_error = _emailControler.text.isEmpty;
+                              //     pass_error = _passwordControler.text.isEmpty;
+                              //     pass_error_lenght =
+                              //         _passwordControler.text.length < 8;
+                              //   });
+
+                              //   if (_emailControler.text.isEmpty ||
+                              //       _passwordControler.text.isEmpty) {
+                              //     _showAlertDialog();
+                              //   } else if (_passwordControler.text.length < 8) {
+                              //     pass_error_lenght = true;
+                              //   } else {
+                              //     // Perform the admin login
+                              //     AuthService authService =
+                              //         AuthService(context);
+                              //     MyAppAdmins? admin =
+                              //         await authService.signInAdmin(
+                              //       email: _emailControler.text.trim(),
+                              //       password: _passwordControler.text.trim(),
+                              //     );
+
+                              //     if (admin != null) {
+                              //       setState(() {
+                              //         currentAdmin = admin;
+                              //       });
+
+                              //       // Redirect to admin main screen if login is successful
+                              //       Navigator.pushAndRemoveUntil(
+                              //         context,
+                              //         MaterialPageRoute(
+                              //           builder: (context) =>
+                              //               const AdminMainScreen(),
+                              //         ),
+                              //         (route) => true,
+                              //       );
+                              //     }
+                              //   }
+                              // },
                               // ... The rest of the code for the ElevatedButton ...
 
                               style: ElevatedButton.styleFrom(
@@ -395,6 +427,22 @@ class _LoginAdminState extends State<LoginAdmin> {
         color: Colors.red,
       );
     });
+  }
+
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   Future.delayed(const Duration(seconds: 1));
+
+  //   SeendUpdate(context);
+  // }
+
+  @override
+  void dispose() {
+    _emailControler.dispose();
+    _passwordControler.dispose();
+
+    super.dispose();
   }
 
   Future<void> _showAlertDialog() async {

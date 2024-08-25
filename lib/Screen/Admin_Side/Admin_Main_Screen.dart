@@ -9,7 +9,6 @@ import 'package:connectgate/core/Check%20internet.dart';
 import 'package:connectgate/core/NoInternet.dart';
 import 'package:connectgate/models/admin_model.dart';
 import 'package:connectgate/models/static_value.dart';
-
 import 'package:curved_navigation_bar/curved_navigation_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -46,30 +45,6 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
     )
   ];
   int _selectedindex = 1;
-  // @override
-  // void initState() {
-  //   Future.delayed(const Duration(seconds: 1));
-
-  //   SeendUpdate(context);
-  //   super.initState();
-  // }
-
-  Future<void> fetchUserData() async {
-    AuthService authService = AuthService(context);
-    MyAppAdmins? adminData = (await authService.getCurrentAdmin());
-    setState(() {
-      ADMIN_DATA.email = adminData!.email;
-      ADMIN_DATA.name = adminData.name;
-    });
-  }
-
-  @override
-  void initState() {
-    fetchUserData();
-
-    super.initState();
-  }
-
   @override
   Widget build(BuildContext context) {
     return Consumer<connectivitycheck>(builder: (context, modle, child) {
@@ -98,5 +73,41 @@ class _AdminMainScreenState extends State<AdminMainScreen> {
               body: Screens[_selectedindex])
           : Nointernet();
     });
+  }
+
+  // @override
+  // void initState() {
+  //   Future.delayed(const Duration(seconds: 1));
+
+  //   SeendUpdate(context);
+  //   super.initState();
+  // }
+
+  // Future<void> fetchUserData() async {
+  //   AuthService authService = AuthService(context);
+  //   MyAppAdmins? adminData = (await authService.getCurrentAdmin());
+  //   setState(() {
+  //     ADMIN_DATA.email = adminData!.email;
+  //     ADMIN_DATA.name = adminData.name;
+  //   });
+  // }
+
+  Future<void> fetchUserData() async {
+    AuthService authService = AuthService(context);
+    MyAppAdmins? adminData = await authService.getCurrentAdmin();
+    if (mounted) {
+      // Check if the widget is still in the widget tree
+      setState(() {
+        ADMIN_DATA.email = adminData?.email ?? '';
+        ADMIN_DATA.name = adminData?.name ?? '';
+      });
+    }
+  }
+
+  @override
+  void initState() {
+    fetchUserData();
+
+    super.initState();
   }
 }

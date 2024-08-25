@@ -58,7 +58,8 @@ class _AnswersCardUserState extends State<AnswersCardUser> {
             final answer = answerWithCount['document'] as QueryDocumentSnapshot;
             final answerId = answer.id;
             final replyCount = answerWithCount['replyCount'] as int;
-            final userName = answer.get('Name') as String? ?? 'No UserName';
+            final userName =
+                answer.get('user_name') as String? ?? 'No UserName';
             final userAnswer = answer.get('answer') as String? ?? 'No answer';
             final timestamp = answer.get('timestamp') as Timestamp?;
             final finalData = timestamp?.toDate();
@@ -257,7 +258,7 @@ class _AnswersCardUserState extends State<AnswersCardUser> {
           itemBuilder: (context, index) {
             final reply = replies[index];
             final replyText = reply.get('reply') as String? ?? 'No reply';
-            final username = reply.get('user_name') as String? ?? 'User';
+            final username = reply.get('Name') as String? ?? 'User';
             final timestamp = reply.get('timestamp') as Timestamp?;
             final replyDate = timestamp?.toDate();
 

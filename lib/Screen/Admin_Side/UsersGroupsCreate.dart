@@ -1,6 +1,7 @@
 // Group and User Creation Page
 // ignore_for_file: library_private_types_in_public_api, file_names, unused_field, unused_local_variable, unused_element, unused_import, use_build_context_synchronously, unnecessary_null_comparison, depend_on_referenced_packages, non_constant_identifier_names
 
+import 'dart:async';
 import 'dart:math';
 
 import 'package:connectgate/Screen/Admin_Side/Admin_Main_Screen.dart';
@@ -38,6 +39,7 @@ class _UsersGroupsCreateState extends State<UsersGroupsCreate> {
   TextEditingController groupNameController = TextEditingController();
   List<String> groupNames = [];
   List<MyAppUser> allUsersList = []; //eplace with real users
+  StreamSubscription? _userSubscription;
 
   // @override
   // void dispose() {
@@ -63,12 +65,32 @@ class _UsersGroupsCreateState extends State<UsersGroupsCreate> {
       );
       await _groupService.createGroup(newGroup);
 
-      setState(() {
-        groupNames.add(newGroup.name);
-        groupNameController.text = '';
-      });
+      if (mounted) {
+        setState(() {
+          groupNames.add(newGroup.name);
+          groupNameController.text = '';
+        });
+      }
     }
   }
+
+  // void addGroup() async {
+  //   if (groupNameController.text.isNotEmpty) {
+  //     final newGroup = MyAppGroup(
+  //       id: Random().nextInt(100000).toString(),
+  //       name: groupNameController.text,
+  //       users: [],
+  //       org: adminData!.org,
+  //       city: adminData!.city,
+  //     );
+  //     await _groupService.createGroup(newGroup);
+
+  //     setState(() {
+  //       groupNames.add(newGroup.name);
+  //       groupNameController.text = '';
+  //     });
+  //   }
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -578,9 +600,46 @@ class _UsersGroupsCreateState extends State<UsersGroupsCreate> {
   }
 
   @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _authService = AuthService(context); // Safe to access context here
+    //  _userSubscription = _authService.getUsers().listen((users) {
+    _authService.getUsers().listen((users) {
+      get();
+      if (mounted) {
+        // Ensure the widget is still mounted
+        setState(() {
+          allUsersList = users;
+        });
+      }
+    });
+  }
+
+  // @override
+  // void didChangeDependencies() {
+  //   super.didChangeDependencies();
+  //   _authService = AuthService(context); // Safe to access context here
+  //   _authService.getUsers().listen((users) {
+  //     get();
+  //     if (mounted) {
+  //       // Ensure the widget is still mounted
+  //       setState(() {
+  //         allUsersList = users;
+  //       });
+  //     }
+  //   });
+  // }
+
+  @override
   void dispose() {
     _isDisposed = true; // Update _isDisposed when the widget is disposed
+    _userSubscription?.cancel();
+
+    nameController.dispose();
+    emailController.dispose();
     passwordController.dispose();
+    groupNameController.dispose();
+
     // SeendUpdate(context);
     super.dispose();
   }
@@ -589,22 +648,22 @@ class _UsersGroupsCreateState extends State<UsersGroupsCreate> {
     adminData = await AuthService(context).getCurrentAdmin();
   }
 
-  @override
-  void initState() {
-    super.initState();
-    _authService = AuthService(context);
-    _authService.getUsers().listen((users) {
-      get();
-      if (!_isDisposed) {
-        setState(() {
-          allUsersList = users;
-        });
-      }
-    });
-  }
+  // @override
+  // void initState() {
+  //   super.initState();
+  //   _authService = AuthService(context);
+  //   _authService.getUsers().listen((users) {
+  //     get();
+  //     if (!_isDisposed) {
+  //       setState(() {
+  //         allUsersList = users;
+  //       });
+  //     }
+  //   });
+  // }
 
   Future<void> signUpUser() async {
-    if (_isDisposed) return;
+    if (!mounted) return; // Check if the widget is still mounted
 
     String name = nameController.text.trim();
     String email = emailController.text.trim();
@@ -625,14 +684,52 @@ class _UsersGroupsCreateState extends State<UsersGroupsCreate> {
         nameController.clear();
         emailController.clear();
         passwordController.clear();
-        _showSnackbar(context, 'User created successfully'.tr, Colors.green);
+        if (mounted) {
+          // Ensure the widget is still mounted
+          _showSnackbar(context, 'User created successfully'.tr, Colors.green);
+        }
       } else {
-        _showSnackbar(context, 'User creation failed'.tr, Colors.red);
+        if (mounted) {
+          _showSnackbar(context, 'User creation failed'.tr, Colors.red);
+        }
       }
     } catch (e) {
-      _showSnackbar(context, 'Error creating user: $e'.tr, Colors.red);
+      if (mounted) {
+        _showSnackbar(context, 'Error creating user: $e'.tr, Colors.red);
+      }
     }
   }
+
+  // Future<void> signUpUser() async {
+  //   if (_isDisposed) return;
+
+  //   String name = nameController.text.trim();
+  //   String email = emailController.text.trim();
+  //   String password = passwordController.text.trim();
+  //   if (name.isEmpty || email.isEmpty || password.isEmpty) {
+  //     _showSnackbar(context, 'Please fill in all fields'.tr, Colors.red);
+  //     return;
+  //   }
+
+  //   try {
+  //     MyAppUser? newUser = await _authService.signUpUser(
+  //       name: name,
+  //       email: email,
+  //       password: password,
+  //     );
+  //     if (newUser != null) {
+  //       // Clear the text fields after successful sign-up
+  //       nameController.clear();
+  //       emailController.clear();
+  //       passwordController.clear();
+  //       _showSnackbar(context, 'User created successfully'.tr, Colors.green);
+  //     } else {
+  //       _showSnackbar(context, 'User creation failed'.tr, Colors.red);
+  //     }
+  //   } catch (e) {
+  //     _showSnackbar(context, 'Error creating user: $e'.tr, Colors.red);
+  //   }
+  // }
 
   Future<void> _showAddUsersDialog(
       MyAppGroup group, List<MyAppUser> allUsers) async {
