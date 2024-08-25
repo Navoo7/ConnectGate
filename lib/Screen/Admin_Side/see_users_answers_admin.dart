@@ -3,7 +3,7 @@ import 'dart:io';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectgate/Services/auth_services.dart';
-import 'package:connectgate/Widgets/answer_card.dart';
+import 'package:connectgate/Widgets/answer_card_admin_side.dart';
 import 'package:connectgate/core/Check%20internet.dart';
 import 'package:connectgate/core/NoInternet.dart'; // Ensure this is defined elsewhere
 import 'package:connectgate/models/admin_model.dart';

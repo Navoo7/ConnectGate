@@ -120,7 +120,7 @@ class _AnswersCardState extends State<AnswersCard> {
           .collection('replies')
           .add({
         'reply': reply,
-        'admin_name': currentAdmin!.name,
+        'Name': currentAdmin!.name,
         'timestamp': FieldValue.serverTimestamp(),
       });
       // Update the reply count
@@ -255,7 +255,7 @@ class _AnswersCardState extends State<AnswersCard> {
           itemBuilder: (context, index) {
             final reply = replies[index];
             final replyText = reply.get('reply') as String? ?? 'No reply';
-            final adminName = reply.get('admin_name') as String? ?? 'Admin';
+            final adminName = reply.get('Name') as String? ?? 'No UserName';
             final timestamp = reply.get('timestamp') as Timestamp?;
             final replyDate = timestamp?.toDate();
 
