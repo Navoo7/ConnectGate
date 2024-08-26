@@ -46,60 +46,63 @@ class _SeeAnsweresState extends State<SeeAnsweres> {
                             bottomRight: Radius.circular(50),
                           ),
                         ),
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              top: 60, left: 22, right: 20),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                children: [
-                                  GestureDetector(
-                                    onTap: () => Navigator.pop(context),
-                                    child: Icon(
-                                      Icons.arrow_back,
-                                      color: Colors.white,
+                        child: GestureDetector(
+                          onTap: () => FocusScope.of(context).unfocus(),
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                top: 60, left: 22, right: 20),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    GestureDetector(
+                                      onTap: () => Navigator.pop(context),
+                                      child: Icon(
+                                        Icons.arrow_back,
+                                        color: Colors.white,
+                                      ),
                                     ),
+                                    Text(''),
+                                    Text(
+                                      title,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontSize: 12,
+                                        fontFamily: 'NRT',
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 10),
+                                Center(
+                                  child: Icon(
+                                    Icons.message,
+                                    color: Colors.white,
+                                    size: 22,
                                   ),
-                                  Text(''),
-                                  Text(
-                                    title,
+                                ),
+                                SizedBox(height: 15),
+                                Center(
+                                  child: Text(
+                                    questionitself,
+                                    softWrap: true,
+                                    overflow: TextOverflow.clip,
+                                    maxLines: 20,
+                                    textAlign: TextAlign.justify,
                                     style: TextStyle(
                                       color: Colors.white,
-                                      fontSize: 12,
+                                      fontSize: 14,
                                       fontFamily: 'NRT',
+                                      letterSpacing: 1.2,
                                     ),
                                   ),
-                                ],
-                              ),
-                              SizedBox(height: 10),
-                              Center(
-                                child: Icon(
-                                  Icons.message,
-                                  color: Colors.white,
-                                  size: 22,
                                 ),
-                              ),
-                              SizedBox(height: 15),
-                              Center(
-                                child: Text(
-                                  questionitself,
-                                  softWrap: true,
-                                  overflow: TextOverflow.clip,
-                                  maxLines: 20,
-                                  textAlign: TextAlign.justify,
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 14,
-                                    fontFamily: 'NRT',
-                                    letterSpacing: 1.2,
-                                  ),
-                                ),
-                              ),
-                              SizedBox(height: 25),
-                            ],
+                                SizedBox(height: 25),
+                              ],
+                            ),
                           ),
                         ),
                       ),

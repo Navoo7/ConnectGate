@@ -66,31 +66,34 @@ class _AnswersCardUserState extends State<AnswersCardUser> {
 
             _initializeControllers(answerId);
 
-            return Padding(
-              padding: const EdgeInsets.all(16.0),
-              child: ClipRRect(
-                borderRadius: BorderRadius.circular(20),
-                child: Container(
-                  color: Color.fromARGB(221, 20, 20, 20),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      SizedBox(height: 12),
-                      _buildAnswerHeader(userName, finalData, answerId),
-                      Divider(
-                        thickness: 1.2,
-                        color: Colors.grey[700],
-                      ).paddingSymmetric(horizontal: 22),
-                      _buildAnswerBody(userAnswer),
-                      SizedBox(height: 10),
-                      if (_expandedStates[answerId] == true) ...[
-                        _buildRepliesStream(answerId),
-                        _buildReplyInput(answerId),
+            return GestureDetector(
+              onTap: () => FocusScope.of(context).unfocus(),
+              child: Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: ClipRRect(
+                  borderRadius: BorderRadius.circular(20),
+                  child: Container(
+                    color: Color.fromARGB(221, 20, 20, 20),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        SizedBox(height: 12),
+                        _buildAnswerHeader(userName, finalData, answerId),
+                        Divider(
+                          thickness: 1.2,
+                          color: Colors.grey[700],
+                        ).paddingSymmetric(horizontal: 22),
+                        _buildAnswerBody(userAnswer),
+                        SizedBox(height: 10),
+                        if (_expandedStates[answerId] == true) ...[
+                          _buildRepliesStream(answerId),
+                          _buildReplyInput(answerId),
+                        ],
+                        SizedBox(height: 1),
+                        _buildReplyCount(replyCount, answerId),
                       ],
-                      SizedBox(height: 1),
-                      _buildReplyCount(replyCount, answerId),
-                    ],
-                  ).paddingOnly(bottom: 8),
+                    ).paddingOnly(bottom: 8),
+                  ),
                 ),
               ),
             );
@@ -179,7 +182,7 @@ class _AnswersCardUserState extends State<AnswersCardUser> {
                   fontSize: 16,
                   letterSpacing: 1.2,
                   color: Colors.white,
-                  fontFamily: 'ageo-bold',
+                  fontFamily: 'NRT',
                 ),
               ),
               const SizedBox(height: 6),
@@ -280,7 +283,8 @@ class _AnswersCardUserState extends State<AnswersCardUser> {
                         const SizedBox(width: 10),
                         Text(
                           username,
-                          style: const TextStyle(color: Colors.white),
+                          style: const TextStyle(
+                              color: Colors.white, fontFamily: 'NRT'),
                         ),
                         const Spacer(),
                         Text(
