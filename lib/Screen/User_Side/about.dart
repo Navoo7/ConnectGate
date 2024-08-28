@@ -88,8 +88,8 @@ class _AboutState extends State<About> {
                                       children: [
                                         GestureDetector(
                                           onTap: () {
-                                            launch(
-                                                'https://www.linkedin.com/in/navid-h-a2775b20a');
+                                            // launch(
+                                            //     'https://www.linkedin.com/in/navid-h-a2775b20a');
                                           },
                                           child: Container(
                                             width: 75.0,
@@ -106,16 +106,19 @@ class _AboutState extends State<About> {
                                                 backgroundColor: Colors.white,
                                                 child: Container(
                                                   decoration: BoxDecoration(
-                                                    borderRadius:
-                                                        const BorderRadius.all(
-                                                            Radius.circular(
-                                                                50)),
-                                                    image: DecorationImage(
-                                                      image:
-                                                          NetworkImage(navid),
-                                                      fit: BoxFit.cover,
-                                                    ),
-                                                  ),
+                                                      borderRadius:
+                                                          const BorderRadius
+                                                              .all(
+                                                              Radius.circular(
+                                                                  50)),
+                                                      image: navid != ''
+                                                          ? DecorationImage(
+                                                              image:
+                                                                  NetworkImage(
+                                                                      navid),
+                                                              fit: BoxFit.cover,
+                                                            )
+                                                          : null),
                                                 )),
                                           ),
                                         ),
@@ -143,8 +146,8 @@ class _AboutState extends State<About> {
                                         ),
                                         InkWell(
                                           onTap: () {
-                                            launch(
-                                                'https://www.linkedin.com/in/navid-h-a2775b20a');
+                                            // launch(
+                                            //     'https://www.linkedin.com/in/navid-h-a2775b20a');
                                           },
                                           child: Container(
                                             width: 12,
