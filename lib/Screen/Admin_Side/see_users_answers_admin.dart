@@ -285,6 +285,7 @@ class _SeeAnswersAdminState extends State<SeeAnswersAdmin> {
     _initialize();
   }
 
+//
   Future<Map<String, double>> _calculateOptionPercentages() async {
     try {
       final answersQuerySnapshot = await FirebaseFirestore.instance
