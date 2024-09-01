@@ -3,6 +3,7 @@
 import 'dart:math';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectgate/Screen/Admin_Side/Admin_Main_Screen.dart';
 import 'package:connectgate/Screen/User_Side/User_Main_Screen.dart';
 import 'package:connectgate/core/CeckForUpdate.dart';
 import 'package:connectgate/core/Check%20internet.dart';
@@ -50,7 +51,7 @@ class _AboutAdminState extends State<AboutAdmin> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              UserMainScreen(),
+                                              AdminMainScreen(),
                                         ),
                                       );
                                     },
