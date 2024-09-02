@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectgate/Services/auth_services.dart';
 import 'package:connectgate/Widgets/answer_card_admin_side.dart';
+import 'package:connectgate/Widgets/pie_cahrt_widgets.dart';
 import 'package:connectgate/core/Check%20internet.dart';
 import 'package:connectgate/core/NoInternet.dart'; // Ensure this is defined elsewhere
 import 'package:connectgate/models/admin_model.dart';
@@ -72,30 +73,24 @@ class _SeeAnswersAdminState extends State<SeeAnswersAdmin> {
                             children: [
                               GestureDetector(
                                 onTap: () => Navigator.pop(context),
-                                child: Icon(
-                                  Icons.arrow_back,
-                                  color: Colors.white,
-                                ),
+                                child:
+                                    Icon(Icons.arrow_back, color: Colors.white),
                               ),
                               Text(' '),
                               if (title != null)
                                 Text(
                                   title!,
                                   style: TextStyle(
-                                    color: Colors.white,
-                                    fontSize: 12,
-                                    fontFamily: 'NRT',
-                                  ),
+                                      color: Colors.white,
+                                      fontSize: 12,
+                                      fontFamily: 'NRT'),
                                 ),
                             ],
                           ),
                           SizedBox(height: 10),
                           Center(
-                            child: Icon(
-                              Icons.message,
-                              color: Colors.white,
-                              size: 22,
-                            ),
+                            child: Icon(Icons.message,
+                                color: Colors.white, size: 22),
                           ),
                           SizedBox(height: 15),
                           Center(
@@ -106,11 +101,10 @@ class _SeeAnswersAdminState extends State<SeeAnswersAdmin> {
                               maxLines: 20,
                               textAlign: TextAlign.justify,
                               style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 14,
-                                fontFamily: 'NRT',
-                                letterSpacing: 1.2,
-                              ),
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontFamily: 'NRT',
+                                  letterSpacing: 1.2),
                             ),
                           ),
                           SizedBox(height: 25),
@@ -121,9 +115,8 @@ class _SeeAnswersAdminState extends State<SeeAnswersAdmin> {
                 ),
               ),
               SliverToBoxAdapter(
-                child: AnswersCard(
-                  myTitle: widget.questionData['title'] ?? 'N/A',
-                ),
+                child:
+                    AnswersCard(myTitle: widget.questionData['title'] ?? 'N/A'),
               ),
               SliverToBoxAdapter(
                 child: Padding(
@@ -131,18 +124,20 @@ class _SeeAnswersAdminState extends State<SeeAnswersAdmin> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        'Option Percentages:',
-                        style: TextStyle(
-                            fontSize: 18, fontWeight: FontWeight.bold),
-                      ),
+                      Text('Option Percentages:',
+                          style: TextStyle(
+                              fontSize: 18, fontWeight: FontWeight.bold)),
                       SizedBox(height: 10),
                       if (widget.questionData['options'] != null)
-                        for (var option in widget.questionData['options']!)
-                          Text(
+                        ...widget.questionData['options']!.map(
+                          (option) => Text(
                             '$option: ${optionPercentages[option]?.toStringAsFixed(2) ?? '0.00'}%',
                             style: TextStyle(fontSize: 16),
                           ),
+                        ),
+                      SizedBox(height: 20),
+                      // Add Pie Chart here
+                      PieChartWidget(optionPercentages: optionPercentages),
                     ],
                   ),
                 ),
@@ -153,10 +148,7 @@ class _SeeAnswersAdminState extends State<SeeAnswersAdmin> {
         floatingActionButton: FloatingActionButton(
           onPressed: downloadCSV,
           backgroundColor: Colors.black,
-          child: Icon(
-            Icons.download_rounded,
-            color: Colors.white,
-          ),
+          child: Icon(Icons.download_rounded, color: Colors.white),
         ),
       );
     });
