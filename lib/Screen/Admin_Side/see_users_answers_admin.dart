@@ -49,6 +49,7 @@ class _SeeAnswersAdminState extends State<SeeAnswersAdmin> {
           child: CustomScrollView(
             slivers: [
               SliverAppBar(
+                surfaceTintColor: Colors.transparent,
                 automaticallyImplyLeading: false,
                 expandedHeight: 245,
                 pinned: true,
@@ -115,32 +116,32 @@ class _SeeAnswersAdminState extends State<SeeAnswersAdmin> {
                 ),
               ),
               SliverToBoxAdapter(
-                child:
-                    AnswersCard(myTitle: widget.questionData['title'] ?? 'N/A'),
-              ),
-              SliverToBoxAdapter(
                 child: Padding(
                   padding: const EdgeInsets.all(16.0),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text('Option Percentages:',
-                          style: TextStyle(
-                              fontSize: 18, fontWeight: FontWeight.bold)),
+                      // Text('Option Percentages:',
+                      //     style: TextStyle(
+                      //         fontSize: 18, fontWeight: FontWeight.bold)),
+                      // SizedBox(height: 10),
+                      // if (widget.questionData['options'] != null)
+                      //   ...widget.questionData['options']!.map(
+                      //     (option) => Text(
+                      //       '$option: ${optionPercentages[option]?.toStringAsFixed(2) ?? '0.00'}%',
+                      //       style: TextStyle(fontSize: 16),
+                      //     ),
+                      //   ),
                       SizedBox(height: 10),
-                      if (widget.questionData['options'] != null)
-                        ...widget.questionData['options']!.map(
-                          (option) => Text(
-                            '$option: ${optionPercentages[option]?.toStringAsFixed(2) ?? '0.00'}%',
-                            style: TextStyle(fontSize: 16),
-                          ),
-                        ),
-                      SizedBox(height: 20),
                       // Add Pie Chart here
                       PieChartWidget(optionPercentages: optionPercentages),
                     ],
                   ),
                 ),
+              ),
+              SliverToBoxAdapter(
+                child:
+                    AnswersCard(myTitle: widget.questionData['title'] ?? 'N/A'),
               ),
             ],
           ),

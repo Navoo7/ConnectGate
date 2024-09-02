@@ -1,6 +1,7 @@
 import 'package:connectgate/Widgets/Indicator_widgets.dart';
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class PieChartWidget extends StatefulWidget {
   final Map<String, double> optionPercentages;
@@ -26,7 +27,7 @@ class _PieChartWidgetState extends State<PieChartWidget> {
     ];
 
     return AspectRatio(
-      aspectRatio: 1.3,
+      aspectRatio: 3.4,
       child: Row(
         children: [
           Expanded(
@@ -50,13 +51,39 @@ class _PieChartWidgetState extends State<PieChartWidget> {
                   ),
                   borderData: FlBorderData(show: false),
                   sectionsSpace: 0,
-                  centerSpaceRadius: 40,
+                  centerSpaceRadius:
+                      28, // Increase this value to make the hole bigger
                   sections: _showingSections(colors),
                 ),
+
+                // PieChartData(
+                //   // centerSpaceColor: colors[touchedIndex % colors.length],
+                //   pieTouchData: PieTouchData(
+                //     touchCallback: (FlTouchEvent event, pieTouchResponse) {
+                //       setState(() {
+                //         if (!event.isInterestedForInteractions ||
+                //             pieTouchResponse == null ||
+                //             pieTouchResponse.touchedSection == null) {
+                //           touchedIndex = -1;
+                //           return;
+                //         }
+                //         touchedIndex = pieTouchResponse
+                //             .touchedSection!.touchedSectionIndex;
+                //       });
+                //     },
+                //   ),
+                //   borderData: FlBorderData(show: false),
+                //   sectionsSpace: 0,
+                //   centerSpaceRadius: 20,
+                //   sections: _showingSections(colors),
+                // ),
               ),
             ),
           ),
-          _buildIndicators(colors),
+          SizedBox(
+            width: 15,
+          ),
+          _buildIndicators(colors).paddingOnly(right: 35),
         ],
       ),
     );
@@ -80,8 +107,8 @@ class _PieChartWidgetState extends State<PieChartWidget> {
     return widget.optionPercentages.entries.map((entry) {
       final index = widget.optionPercentages.keys.toList().indexOf(entry.key);
       final isTouched = index == touchedIndex;
-      final fontSize = isTouched ? 13.0 : 10.0;
-      final radius = isTouched ? 60.0 : 50.0;
+      final fontSize = isTouched ? 7.5 : 9.5;
+      final radius = isTouched ? 45.0 : 38.0;
       const shadows = [Shadow(color: Colors.black, blurRadius: 2)];
 
       return PieChartSectionData(
