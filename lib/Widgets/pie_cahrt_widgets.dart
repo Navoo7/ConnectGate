@@ -22,7 +22,7 @@ class _PieChartWidgetState extends State<PieChartWidget> {
       Colors.black.withOpacity(0.3),
       Colors.black.withOpacity(0.4),
       Colors.black.withOpacity(0.6),
-      Colors.black.withOpacity(0.7),
+      Colors.black.withOpacity(0.75),
       Colors.black.withOpacity(0.9),
     ];
 
@@ -83,7 +83,7 @@ class _PieChartWidgetState extends State<PieChartWidget> {
           SizedBox(
             width: 15,
           ),
-          _buildIndicators(colors).paddingOnly(right: 35),
+          _buildIndicators(colors).paddingOnly(right: 55),
         ],
       ),
     );

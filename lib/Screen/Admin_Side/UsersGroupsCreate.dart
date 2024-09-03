@@ -16,6 +16,7 @@ import 'package:connectgate/models/user_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:provider/provider.dart';
+import 'package:slideable/slideable.dart';
 
 class UsersGroupsCreate extends StatefulWidget {
   const UsersGroupsCreate({super.key});
@@ -330,8 +331,7 @@ class _UsersGroupsCreateState extends State<UsersGroupsCreate> {
         const SizedBox(
           height: 12,
         ),
-        // Assign User to Group Section
-        // Display created groups
+        // Display created groups with slide-to-delete functionality
         StreamBuilder<List<MyAppGroup>>(
           stream: _groupService.getGroups(),
           builder: (context, snapshot) {
@@ -348,33 +348,47 @@ class _UsersGroupsCreateState extends State<UsersGroupsCreate> {
                 shrinkWrap: true,
                 itemCount: groups.length,
                 itemBuilder: (context, index) {
-                  final group = groups[index]; // Get the group at index
-                  return ListTile(
-                    title: Text(
-                      group.name,
-                      style: const TextStyle(
-                          fontFamily: 'ageo-bold', fontSize: 18),
-                    ),
-                    subtitle: Text(
-                      'Users: ${group.users.map((user) => user.name).join(', ')}',
-                      style: const TextStyle(fontSize: 12),
-                    ),
-                    trailing: ElevatedButton(
-                      onPressed: () => _showAddUsersDialog(group, allUsersList),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.black,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(50.0),
+                  final group = groups[index];
+                  return Slideable(
+                    child: ListTile(
+                      title: Text(
+                        group.name,
+                        style: const TextStyle(
+                            fontFamily: 'ageo-bold', fontSize: 18),
+                      ),
+                      subtitle: Text(
+                        'Users: ${group.users.map((user) => user.name).join(', ')}',
+                        style: const TextStyle(fontSize: 12),
+                      ),
+                      trailing: ElevatedButton(
+                        onPressed: () =>
+                            _showAddUsersDialog(group, allUsersList),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: Colors.black,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(50.0),
+                          ),
+                        ),
+                        child: Text(
+                          'Add Users'.tr,
+                          style: const TextStyle(
+                              color: Colors.white,
+                              fontFamily: 'NRT',
+                              fontSize: 12),
                         ),
                       ),
-                      child: Text(
-                        'Add Users'.tr,
-                        style: const TextStyle(
-                            color: Colors.white,
-                            fontFamily: 'NRT',
-                            fontSize: 12),
-                      ),
                     ),
+                    items: [
+                      ActionItems(
+                        icon: const Icon(Icons.delete, color: Colors.black)
+                            .paddingOnly(right: 22),
+                        onPress: () async {
+                          await _groupService.deleteGroup(group.id);
+                          setState(() {}); // Refresh the UI after deletion
+                        },
+                        backgroudColor: Colors.transparent,
+                      ),
+                    ],
                   );
                 },
               );
@@ -384,6 +398,152 @@ class _UsersGroupsCreateState extends State<UsersGroupsCreate> {
       ],
     );
   }
+  // Widget creatingGroupsFiled() {
+  //   return Column(
+  //     children: [
+  //       Row(
+  //         children: [
+  //           Padding(
+  //             padding: const EdgeInsets.symmetric(horizontal: 30),
+  //             child: Text(
+  //               'Creating Groups:'.tr,
+  //               style: const TextStyle(
+  //                   fontSize: 18, fontFamily: 'ageo-boldd', letterSpacing: ln2),
+  //             ),
+  //           ),
+  //         ],
+  //       ),
+  //       const SizedBox(
+  //         height: 22,
+  //       ),
+  //       Padding(
+  //         padding: const EdgeInsets.symmetric(horizontal: 30),
+  //         child: TextField(
+  //           minLines: 1,
+  //           maxLines: 8,
+  //           controller: groupNameController,
+  //           cursorColor: Colors.black,
+  //           decoration: InputDecoration(
+  //             labelText: 'Group Name'.tr,
+  //             hintText: 'Enter GroupName Here'.tr,
+  //             labelStyle: const TextStyle(
+  //               color: Colors.grey,
+  //               fontSize: 14.0,
+  //               fontWeight: FontWeight.w400,
+  //             ),
+  //             hintStyle: const TextStyle(
+  //               color: Colors.grey,
+  //               fontSize: 14.0,
+  //             ),
+  //             prefixIcon: const Icon(
+  //               Icons.group,
+  //               color: Colors.black,
+  //               size: 20,
+  //             ),
+  //             enabledBorder: OutlineInputBorder(
+  //               borderSide: const BorderSide(
+  //                 color: Color.fromARGB(255, 183, 183, 183),
+  //                 width: 2,
+  //               ),
+  //               borderRadius: BorderRadius.circular(10.0),
+  //             ),
+  //             focusedBorder: OutlineInputBorder(
+  //               borderSide: const BorderSide(
+  //                 color: Colors.black,
+  //                 width: 1.5,
+  //               ),
+  //               borderRadius: BorderRadius.circular(10.0),
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //       const SizedBox(
+  //         height: 40,
+  //       ),
+  //       Padding(
+  //         padding: const EdgeInsets.symmetric(
+  //           horizontal: 50,
+  //         ),
+  //         child: SizedBox(
+  //           height: 47,
+  //           width: double.infinity,
+  //           child: ElevatedButton(
+  //             onPressed: () {
+  //               addGroup();
+  //             },
+  //             style: ElevatedButton.styleFrom(
+  //               backgroundColor: Colors.black,
+  //               shape: RoundedRectangleBorder(
+  //                 borderRadius: BorderRadius.circular(20.0),
+  //               ),
+  //             ),
+  //             child: Text(
+  //               'Save'.tr,
+  //               style: const TextStyle(
+  //                 color: Colors.white,
+  //                 fontWeight: FontWeight.bold,
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //       ),
+  //       const SizedBox(
+  //         height: 12,
+  //       ),
+  //       // Assign User to Group Section
+  //       // Display created groups
+  //       StreamBuilder<List<MyAppGroup>>(
+  //         stream: _groupService.getGroups(),
+  //         builder: (context, snapshot) {
+  //           if (snapshot.connectionState == ConnectionState.waiting) {
+  //             return const CircularProgressIndicator(
+  //               color: Colors.black,
+  //             );
+  //           } else if (snapshot.hasError) {
+  //             return Text('Error: ${snapshot.error}');
+  //           } else {
+  //             final groups = snapshot.data ?? [];
+
+  //             return ListView.builder(
+  //               shrinkWrap: true,
+  //               itemCount: groups.length,
+  //               itemBuilder: (context, index) {
+  //                 final group = groups[index]; // Get the group at index
+  //                 return ListTile(
+  //                   title: Text(
+  //                     group.name,
+  //                     style: const TextStyle(
+  //                         fontFamily: 'ageo-bold', fontSize: 18),
+  //                   ),
+  //                   subtitle: Text(
+  //                     'Users: ${group.users.map((user) => user.name).join(', ')}',
+  //                     style: const TextStyle(fontSize: 12),
+  //                   ),
+  //                   trailing: ElevatedButton(
+  //                     onPressed: () => _showAddUsersDialog(group, allUsersList),
+  //                     style: ElevatedButton.styleFrom(
+  //                       backgroundColor: Colors.black,
+  //                       shape: RoundedRectangleBorder(
+  //                         borderRadius: BorderRadius.circular(50.0),
+  //                       ),
+  //                     ),
+  //                     child: Text(
+  //                       'Add Users'.tr,
+  //                       style: const TextStyle(
+  //                           color: Colors.white,
+  //                           fontFamily: 'NRT',
+  //                           fontSize: 12),
+  //                     ),
+  //                   ),
+  //                 );
+  //               },
+  //             );
+  //           }
+  //         },
+  //       ),
+  //     ],
+  //   );
+  // }
 
   Widget creatingUsersFiled() {
     return Column(
@@ -800,10 +960,6 @@ class _UsersGroupsCreateState extends State<UsersGroupsCreate> {
                   // Update the group using the service
                   await _groupService.updateGroup(
                       updatedGroup, adminData.org, adminData.city);
-
-                  setState(() {
-                    Navigator.pop(context);
-                  });
                 },
                 child: Text(
                   'Save'.tr,
@@ -817,6 +973,7 @@ class _UsersGroupsCreateState extends State<UsersGroupsCreate> {
     );
   }
 
+  /// The snackbar has a floating behavior and a rounded rectangle shape.
   void _showSnackbar(
     BuildContext context,
     String message,

@@ -1,15 +1,83 @@
 // ignore_for_file: avoid_print, unnecessary_cast, duplicate_ignore, depend_on_referenced_packages
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:connectgate/models/admin_model.dart';
 import 'package:connectgate/models/group_model.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:connectgate/shared_pref/shared_pref.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 class GroupService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   final FirebaseAuth _auth = FirebaseAuth.instance;
+
+  MyAppAdmins? adminData;
+
+  // Create a new group
+  Future<void> createGroup(MyAppGroup group) async {
+    try {
+      MyAppAdmins? adminData = await getCurrentAdmin();
+
+      await _firestore
+          .collection(adminData!.org)
+          .doc(adminData.city)
+          .collection('groups')
+          .doc(group.id)
+          .set({
+        'name': group.name,
+        'org': group.org,
+        'city': group.city,
+        'users': [],
+      });
+      print(adminData.email);
+    } catch (e) {
+      // ignore: avoid_print
+      print('Error creating group: $e');
+    }
+  }
+
+  Future<void> deleteGroup(String groupId) async {
+    try {
+      MyAppAdmins? adminData = await getCurrentAdmin();
+      if (adminData != null) {
+        // 1. Delete the group from the 'groups' collection
+        await _firestore
+            .collection(adminData.org)
+            .doc(adminData.city)
+            .collection('groups')
+            .doc(groupId)
+            .delete();
+        print('Group $groupId deleted from groups collection.');
+
+        // 2. Remove the group reference from users
+        final usersSnapshot = await _firestore.collection('users').get();
+        for (final userDoc in usersSnapshot.docs) {
+          final userData = userDoc.data() as Map<String, dynamic>;
+          final userId = userDoc.id;
+
+          // Debugging statement to check user data
+          print('User $userId data: ${userData['groups']}');
+
+          // If the user is part of the deleted group, remove it from their data
+          if (userData['groups'] != null) {
+            final groupsMap = userData['groups'] as Map?;
+            if (groupsMap != null && groupsMap.containsKey(groupId)) {
+              await _firestore.collection('users').doc(userId).update({
+                'groups.$groupId': FieldValue.delete(),
+              });
+              print('Group $groupId removed from user $userId.');
+            }
+          }
+        }
+      }
+    } catch (e) {
+      print('Error deleting group: $e');
+    }
+  }
+
+  void get() async {
+    adminData = await getCurrentAdmin();
+  }
 
   Future<MyAppAdmins?> getCurrentAdmin() async {
     try {
@@ -43,34 +111,6 @@ class GroupService {
     }
 
     return null;
-  }
-
-  // Create a new group
-  Future<void> createGroup(MyAppGroup group) async {
-    try {
-      MyAppAdmins? adminData = await getCurrentAdmin();
-
-      await _firestore
-          .collection(adminData!.org)
-          .doc(adminData.city)
-          .collection('groups')
-          .doc(group.id)
-          .set({
-        'name': group.name,
-        'org': group.org,
-        'city': group.city,
-        'users': [],
-      });
-      print(adminData.email);
-    } catch (e) {
-      // ignore: avoid_print
-      print('Error creating group: $e');
-    }
-  }
-
-  MyAppAdmins? adminData;
-  void get() async {
-    adminData = await getCurrentAdmin();
   }
 
   // Update your getGroups method
