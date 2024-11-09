@@ -375,6 +375,9 @@ class _AnswersCardUserState extends State<AnswersCardUser> {
               const EdgeInsets.only(left: 20, right: 20, top: 16, bottom: 2),
           child: ElevatedButton(
             onPressed: () {
+                        if( _replyControllers[answerId]!.text.isEmpty){
+        return;
+      }
               if (_replyControllers[answerId] != null) {
                 _addReply(answerId, _replyControllers[answerId]!.text);
                 _replyControllers[answerId]!.clear();

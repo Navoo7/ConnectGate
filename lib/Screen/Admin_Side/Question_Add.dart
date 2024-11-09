@@ -1,5 +1,7 @@
 // ignore_for_file: file_names, library_private_types_in_public_api, deprecated_member_use, unused_field, unused_element, depend_on_referenced_packages, non_constant_identifier_names, unnecessary_new
 
+import 'dart:io';
+
 import 'package:connectgate/Screen/Admin_Side/UsersGroupsCreate.dart';
 import 'package:connectgate/Services/group_services.dart';
 import 'package:connectgate/Services/question_services.dart';
@@ -8,9 +10,11 @@ import 'package:connectgate/core/Check%20internet.dart';
 import 'package:connectgate/core/NoInternet.dart';
 import 'package:connectgate/models/group_model.dart';
 import 'package:connectgate/providers/question_provider.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:provider/provider.dart';
 
 class QuestionAdd extends StatefulWidget {
@@ -29,22 +33,14 @@ class _QuestionAddState extends State<QuestionAdd> {
   TextEditingController questionTitleController = TextEditingController();
   bool question_error = false;
   bool title_error = false;
-
+  final ImagePicker _imagePicker = ImagePicker();
+  XFile? _pickedImage;
   List<String> multipleChoiceOptions = [];
   bool isMultipleChoice = false;
   String? selectedGroupId;
   String selectedType = '';
   List<String> selectedGroups = [];
   String selectedGroupName = '';
-  @override
-  void initState() {
-    super.initState();
-
-    selectedType = 'Regular'; // Set 'Regular' as the default choice
-    // Future.delayed(const Duration(seconds: 1));
-    // SeendUpdate(context);
-  }
-
   void addOption() {
     if (optionController.text.isNotEmpty) {
       setState(() {
@@ -52,21 +48,6 @@ class _QuestionAddState extends State<QuestionAdd> {
         optionController.text = '';
       });
     }
-  }
-
-  void clearSelectedGroups() {
-    setState(() {
-      selectedGroups.clear();
-    });
-  }
-
-  @override
-  void dispose() {
-    optionController.dispose();
-    questionController.dispose();
-    questionTitleController.dispose();
-
-    super.dispose();
   }
 
   @override
@@ -246,78 +227,137 @@ class _QuestionAddState extends State<QuestionAdd> {
                             const SizedBox(height: 12),
 
                             if (isMultipleChoice) buildMultipleChoiceOptions(),
-                            const SizedBox(height: 8),
+                            if (_pickedImage != null) _buildImage(),
+                            const SizedBox(height: 22),
 //////////////////////
 
                             Consumer<QuestionProvider>(
                               builder: (context, questionProvider, child) {
-                                return Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 65),
-                                  child: SizedBox(
-                                    height: 47,
-                                    width: double.infinity,
-                                    child: ElevatedButton(
-                                      onPressed: () async {
-                                        setState(() {
-                                          question_error =
-                                              questionController.text.isEmpty;
-                                          title_error = questionTitleController
-                                              .text.isEmpty;
-                                        });
-                                        // Check if any required fields are empty
+                                return Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    SizedBox(
+                                      height: 46,
+                                      width: 220,
+                                      // width: double.infinity,
+                                      child: ElevatedButton(
+                                        onPressed: () async {
+                                          setState(() {
+                                            question_error =
+                                                questionController.text.isEmpty;
+                                            title_error =
+                                                questionTitleController
+                                                    .text.isEmpty;
+                                          });
+                                          // Check if any required fields are empty
 
-                                        if (questionController.text.isEmpty ||
-                                            questionTitleController
-                                                .text.isEmpty) {
-                                          _showAlertDialog();
-                                        }
-                                        // Check if a group is selected
-                                        else if (selectedGroupId == null) {
-                                          _showSnackBar(
-                                              "Please select a group".tr,
-                                              Colors.red);
-                                        }
-                                        // Check if it's a multiple choice question and options are empty
-                                        else if (isMultipleChoice &&
-                                            multipleChoiceOptions.isEmpty) {
-                                          _showSnackBar(
-                                              "Please add options for the multiple choice question"
-                                                  .tr,
-                                              Colors.red);
-                                        } else {
-                                          questionProvider.addQuestion(
-                                            context: context,
-                                            groupname: selectedGroupName,
-                                            groupIds: selectedGroups,
-                                            title: questionTitleController.text,
-                                            question: questionController.text,
-                                            type: selectedType,
-                                            options: multipleChoiceOptions,
-                                          );
-                                          questionTitleController.clear();
-                                          questionController.clear();
-                                        }
+                                          if (questionController.text.isEmpty ||
+                                              questionTitleController
+                                                  .text.isEmpty) {
+                                            _showAlertDialog();
+                                          }
+                                          // Check if a group is selected
+                                          else if (selectedGroupId == null) {
+                                            _showSnackBar(
+                                                "Please select a group".tr,
+                                                Colors.red);
+                                          }
+                                          // Check if it's a multiple choice question and options are empty
+                                          else if (isMultipleChoice &&
+                                              multipleChoiceOptions.isEmpty) {
+                                            _showSnackBar(
+                                                "Please add options for the multiple choice question"
+                                                    .tr,
+                                                Colors.red);
+                                          } else {
+                                            String uploadedImageUrl = '';
+                                            if (_pickedImage != null) {
+                                              uploadedImageUrl =
+                                                  await _uploadImage(
+                                                      File(_pickedImage!.path));
+                                            }
 
-                                        // Use the questionProvider to add the question
-                                      },
-                                      style: ElevatedButton.styleFrom(
-                                        backgroundColor: Colors.black,
-                                        shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(20.0),
+                                            questionProvider.addQuestion(
+                                              context: context,
+                                              groupname: selectedGroupName,
+                                              groupIds: selectedGroups,
+                                              title:
+                                                  questionTitleController.text,
+                                              question: questionController.text,
+                                              type: selectedType,
+                                              options: multipleChoiceOptions,
+                                              imageFile: uploadedImageUrl,
+                                            );
+                                            questionTitleController.clear();
+                                            questionController.clear();
+                                          }
+
+                                          // Use the questionProvider to add the question
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.black,
+                                          shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(12.0),
+                                          ),
                                         ),
-                                      ),
-                                      child: Text(
-                                        'Send'.tr,
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
+                                        child: Center(
+                                          child: Text(
+                                            'Send'.tr,
+                                            style: const TextStyle(
+                                              color: Colors.white,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
                                         ),
                                       ),
                                     ),
-                                  ),
-                                );
+                                    SizedBox(
+                                      height: 46,
+                                      width: 72,
+                                      child: ElevatedButton(
+                                        onPressed: () async {
+                                          Get.back(); // Close the bottom sheet
+                                          final XFile? image =
+                                              await _imagePicker.pickImage(
+                                                  source: ImageSource.gallery);
+                                          if (image != null) {
+                                            setState(() {
+                                              _pickedImage =
+                                                  image; // Update the picked image
+                                            });
+                                          } else {
+                                            // SnackbarManager().showSnackbar(
+                                            //   context,
+                                            //   "Error",
+                                            //   "No image selected.",
+                                            //   onThen: () => Get.back(),
+                                            //   Icon(
+                                            //     Icons.error,
+                                            //     color: regularblack,
+                                            //   ),
+                                            // );
+                                          }
+                                        },
+                                        style: ElevatedButton.styleFrom(
+                                          backgroundColor: Colors.white,
+                                          shape: RoundedRectangleBorder(
+                                              borderRadius:
+                                                  BorderRadius.circular(12.0),
+                                              side: const BorderSide(
+                                                  color: Colors.black,
+                                                  width: 1.5)),
+                                        ),
+                                        child: Icon(
+                                          Icons.add_a_photo_outlined,
+                                          color: Colors.black,
+                                          size: 27,
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ).paddingSymmetric(horizontal: 40);
                               },
                             ),
 
@@ -434,39 +474,6 @@ class _QuestionAddState extends State<QuestionAdd> {
     );
   }
 
-  Widget buildQuestionTypeSelector() {
-    return Row(
-      children: [
-        Radio<String>(
-          value: 'Regular',
-          groupValue: selectedType,
-          onChanged: (value) {
-            setState(() {
-              selectedType = value!;
-              isMultipleChoice = false; // Hide the multiple choice field
-              multipleChoiceOptions.clear(); // Clear the list of options
-            });
-          },
-          activeColor: Colors.black,
-        ),
-        Text('Regular Question'.tr),
-        const SizedBox(width: 16),
-        Radio<String>(
-          value: 'MultipleChoice',
-          groupValue: selectedType,
-          onChanged: (value) {
-            setState(() {
-              selectedType = value ?? ''; // Provide a default value if null
-              isMultipleChoice = true; // Show the multiple choice field
-            });
-          },
-          activeColor: Colors.black,
-        ),
-        Text('Multiple Choice'.tr),
-      ],
-    );
-  }
-
   Widget buildMultipleChoiceOptions() {
     return Padding(
       padding: const EdgeInsets.symmetric(
@@ -542,6 +549,63 @@ class _QuestionAddState extends State<QuestionAdd> {
     );
   }
 
+  Widget buildQuestionTypeSelector() {
+    return Row(
+      children: [
+        Radio<String>(
+          value: 'Regular',
+          groupValue: selectedType,
+          onChanged: (value) {
+            setState(() {
+              selectedType = value!;
+              isMultipleChoice = false; // Hide the multiple choice field
+              multipleChoiceOptions.clear(); // Clear the list of options
+            });
+          },
+          activeColor: Colors.black,
+        ),
+        Text('Regular Question'.tr),
+        const SizedBox(width: 16),
+        Radio<String>(
+          value: 'MultipleChoice',
+          groupValue: selectedType,
+          onChanged: (value) {
+            setState(() {
+              selectedType = value ?? ''; // Provide a default value if null
+              isMultipleChoice = true; // Show the multiple choice field
+            });
+          },
+          activeColor: Colors.black,
+        ),
+        Text('Multiple Choice'.tr),
+      ],
+    );
+  }
+
+  void clearSelectedGroups() {
+    setState(() {
+      selectedGroups.clear();
+    });
+  }
+
+  @override
+  void dispose() {
+    optionController.dispose();
+    questionController.dispose();
+    questionTitleController.dispose();
+
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    selectedType = 'Regular'; // Set 'Regular' as the default choice
+    // Future.delayed(const Duration(seconds: 1));
+    // SeendUpdate(context);
+  }
+
   Widget showingmultiplequestionchoice() {
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 22, vertical: 20),
@@ -580,6 +644,39 @@ class _QuestionAddState extends State<QuestionAdd> {
     );
   }
 
+  // Build Image Widget with a close icon
+  Widget _buildImage() {
+    return Stack(
+      children: [
+        Center(
+          child: Container(
+            height: 185,
+            width: 320,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(8),
+              image: DecorationImage(
+                image: FileImage(File(_pickedImage!.path)),
+                fit: BoxFit.cover,
+              ),
+            ),
+          ),
+        ),
+        Positioned(
+          right: 55,
+          top: 12,
+          child: GestureDetector(
+            onTap: () {
+              setState(() {
+                _pickedImage = null;
+              });
+            },
+            child: Icon(Icons.close, size: 22, color: Colors.white),
+          ),
+        ),
+      ],
+    );
+  }
+
   Future<void> _showAlertDialog() async {
     return showDialog<void>(
         builder: (context) => CupertinoAlertDialog(
@@ -610,5 +707,31 @@ class _QuestionAddState extends State<QuestionAdd> {
     );
 
     ScaffoldMessenger.of(context).showSnackBar(snackBar);
+  }
+
+  // Ensure the _uploadImage function is defined as follows
+  Future<String> _uploadImage(File imageFile) async {
+    try {
+      final storageRef = FirebaseStorage.instance.ref();
+      final imageRef = storageRef.child(
+          'questions/${questionTitleController.text.toString()}_${DateTime.now().millisecondsSinceEpoch}.jpg');
+
+      // Start the upload
+      UploadTask uploadTask = imageRef.putFile(
+        imageFile,
+        SettableMetadata(contentType: 'image/jpeg'),
+      );
+
+      // Wait for the upload to complete
+      TaskSnapshot snapshot = await uploadTask;
+
+      // Get the download URL
+      final downloadUrl = await snapshot.ref.getDownloadURL();
+      print("Image uploaded successfully: $downloadUrl");
+      return downloadUrl;
+    } catch (e) {
+      print("Error uploading image: $e");
+      throw Exception('Failed to upload image: $e');
+    }
   }
 }

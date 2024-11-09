@@ -149,6 +149,7 @@ class _QuestionUserState extends State<QuestionUser> {
                             //  final hasAnswered = hasUserAnsweredQuestion(title);
 
                             // Check if the user has answered the question in real-time
+
                             return StreamBuilder<QuerySnapshot>(
                               stream: currentUser != null
                                   ? FirebaseFirestore.instance
@@ -157,8 +158,7 @@ class _QuestionUserState extends State<QuestionUser> {
                                       .collection('answers')
                                       .where('title', isEqualTo: title)
                                       .where('user_email',
-                                          isEqualTo: FirebaseAuth
-                                              .instance.currentUser?.email)
+                                          isEqualTo: currentUser?.email)
                                       .snapshots()
                                   : Stream.empty(),
                               builder: (context, answerSnapshot) {
@@ -179,6 +179,15 @@ class _QuestionUserState extends State<QuestionUser> {
                                   final hasAnswered =
                                       answerSnapshot.data?.docs.isNotEmpty ??
                                           false;
+                                  print('city ====== ${currentUser!.city}');
+                                  print('------- ${currentUser!.email}');
+                                  print('++++++++ title $title');
+                                  print(
+                                      '========== org ${currentUser!.org} \n');
+                                  print(
+                                      '/////////////is answered $hasAnswered');
+                                  print('\n');
+
                                   return Padding(
                                     padding: const EdgeInsets.all(20),
                                     child: ClipRRect(
@@ -266,7 +275,7 @@ class _QuestionUserState extends State<QuestionUser> {
                                                                 MaterialPageRoute(
                                                                   builder:
                                                                       (context) =>
-                                                                          SeeAnsweres(
+                                                                          SeeAnswersUser(
                                                                     questionData:
                                                                         questionData,
                                                                   ),

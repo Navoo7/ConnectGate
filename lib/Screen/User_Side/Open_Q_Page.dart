@@ -26,6 +26,7 @@ class _OpenQPageState extends State<OpenQPage> {
   TextEditingController answerController =
       TextEditingController(); // Controller for the answer
   MyAppUser? currentUser;
+  bool isLoading = false;
   @override
   Widget build(BuildContext context) {
     final questionData = widget.questionData;
@@ -155,33 +156,48 @@ class _OpenQPageState extends State<OpenQPage> {
                                     height: 47,
                                     width: double.infinity,
                                     child: ElevatedButton(
-                                      onPressed: () async {
-                                        saveAnswer(option);
-                                        // Optionally, you can show a confirmation message here.
-                                        final questionData = {
-                                          'title':
-                                              title, // Replace with the actual data you want to pass
-                                          'createdAt':
-                                              timestamp, // Replace with the actual data you want to pass
-                                          // Add more fields as needed
-                                          'question': questionitself,
-                                          'type': questiontype,
-                                          'options': options,
-                                          'groupname': groupname,
-                                        };
+                                      onPressed: isLoading
+                                          ? null // Disable button if loading
+                                          : () async {
+                                              final answer =
+                                                  answerController.text;
+                                              if (answer.isNotEmpty) {
+                                                setState(() {
+                                                  isLoading =
+                                                      true; // Start loading
+                                                });
+                                              }
+                                              saveAnswer(option);
+                                              // Optionally, you can show a confirmation message here.
+                                              final questionData = {
+                                                'title':
+                                                    title, // Replace with the actual data you want to pass
+                                                'createdAt':
+                                                    timestamp, // Replace with the actual data you want to pass
+                                                // Add more fields as needed
+                                                'question': questionitself,
+                                                'type': questiontype,
+                                                'options': options,
+                                                'groupname': groupname,
+                                              };
 
-                                        Navigator.pushReplacement(
-                                          context,
-                                          MaterialPageRoute(
-                                            builder: (context) => SeeAnsweres(
-                                              questionData: questionData,
-                                              // totalQuestions: widget.totalQuestions,
-                                              // currentQuestionIndex:
-                                              //     widget.currentQuestionIndex,
-                                            ),
-                                          ),
-                                        );
-                                      },
+                                              Navigator.pushReplacement(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      SeeAnswersUser(
+                                                    questionData: questionData,
+                                                    // totalQuestions: widget.totalQuestions,
+                                                    // currentQuestionIndex:
+                                                    //     widget.currentQuestionIndex,
+                                                  ),
+                                                ),
+                                              );
+                                              setState(() {
+                                                isLoading =
+                                                    false; // Stop loading
+                                              });
+                                            },
                                       style: ElevatedButton.styleFrom(
                                         elevation: 45, // Elevation
                                         shadowColor:
@@ -195,13 +211,17 @@ class _OpenQPageState extends State<OpenQPage> {
                                               BorderRadius.circular(60.0),
                                         ),
                                       ),
-                                      child: Text(
-                                        option,
-                                        style: TextStyle(
-                                            color: Colors.white,
-                                            fontFamily: 'NRT',
-                                            fontSize: 16),
-                                      ),
+                                      child: isLoading
+                                          ? CircularProgressIndicator(
+                                              color: Colors
+                                                  .white) // Show loading indicator
+                                          : Text(
+                                              option,
+                                              style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontFamily: 'NRT',
+                                                  fontSize: 16),
+                                            ),
                                     ),
                                   ),
                                 );
@@ -261,52 +281,65 @@ class _OpenQPageState extends State<OpenQPage> {
                               height: 47,
                               width: double.infinity,
                               child: ElevatedButton(
-                                onPressed: () async {
-                                  final answer = answerController.text;
-                                  if (answer.isNotEmpty) {
-                                    await saveAnswer(answer);
-                                    answerController
-                                        .clear(); // Clear the answer text field
-                                    // Optionally, you can show a confirmation message here.
-                                    final answersData = {
-                                      'title':
-                                          title, // Replace with the actual data you want to pass
-                                      'createdAt':
-                                          timestamp, // Replace with the actual data you want to pass
-                                      // Add more fields as needed
-                                      'question': questionitself,
-                                      'type': questiontype,
-                                      'options': options,
-                                      'groupname': groupname,
-                                    };
+                                onPressed: isLoading
+                                    ? null // Disable button if loading
+                                    : () async {
+                                        final answer = answerController.text;
+                                        setState(() {
+                                          isLoading = true; // Start loading
+                                        });
+                                        if (answer.isNotEmpty) {
+                                          await saveAnswer(answer);
+                                          answerController
+                                              .clear(); // Clear the answer text field
+                                          // Optionally, you can show a confirmation message here.
+                                          final answersData = {
+                                            'title':
+                                                title, // Replace with the actual data you want to pass
+                                            'createdAt':
+                                                timestamp, // Replace with the actual data you want to pass
+                                            // Add more fields as needed
+                                            'question': questionitself,
+                                            'type': questiontype,
+                                            'options': options,
+                                            'groupname': groupname,
+                                          };
 // After successfully saving the answer, mark the question as answered
 
-                                    Navigator.pushReplacement(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) => SeeAnsweres(
-                                          questionData: questionData,
-                                          // totalQuestions: widget.totalQuestions,
-                                          // currentQuestionIndex:
-                                          //     widget.currentQuestionIndex,
-                                        ),
-                                      ),
-                                    );
-                                  }
-                                },
+                                          Navigator.pushReplacement(
+                                            context,
+                                            MaterialPageRoute(
+                                              builder: (context) =>
+                                                  SeeAnswersUser(
+                                                questionData: questionData,
+                                                // totalQuestions: widget.totalQuestions,
+                                                // currentQuestionIndex:
+                                                //     widget.currentQuestionIndex,
+                                              ),
+                                            ),
+                                          );
+                                          setState(() {
+                                            isLoading = false; // Stop loading
+                                          });
+                                        }
+                                      },
                                 style: ElevatedButton.styleFrom(
                                   backgroundColor: Colors.black,
                                   shape: RoundedRectangleBorder(
                                     borderRadius: BorderRadius.circular(20.0),
                                   ),
                                 ),
-                                child: const Text(
-                                  'Send',
-                                  style: TextStyle(
-                                    color: Colors.white,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
+                                child: isLoading
+                                    ? CircularProgressIndicator(
+                                        color: Colors
+                                            .white) // Show loading indicator
+                                    : const Text(
+                                        'Send',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                      ),
                               ),
                             ),
                           ),

@@ -1,3 +1,5 @@
+// main.dart
+
 // ignore_for_file: non_constant_identifier_names, depend_on_referenced_packages, unnecessary_import
 
 import 'package:connectgate/core/Check%20internet.dart';
@@ -8,8 +10,6 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_navigation/src/root/get_material_app.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 

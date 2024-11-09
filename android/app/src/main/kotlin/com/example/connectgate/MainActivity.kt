@@ -1,4 +1,4 @@
-package com.ConnectGate.android
+package com.example.connectgate
 
 import io.flutter.embedding.android.FlutterActivity
 
