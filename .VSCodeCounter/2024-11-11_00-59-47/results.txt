@@ -1,0 +1,164 @@
+Date : 2024-11-11 00:59:47
+Directory : /Users/golden/Documents/connectgate
+Total : 76 files,  10733 codes, 9637 comments, 5810 blanks, all 26180 lines
+
+Languages
++-----------------+------------+------------+------------+------------+------------+
+| language        | files      | code       | comment    | blank      | total      |
++-----------------+------------+------------+------------+------------+------------+
+| Dart            |         42 |      9,467 |      9,471 |      5,698 |     24,636 |
+| Project.pbxproj |          1 |        711 |         31 |         16 |        758 |
+| XML             |         15 |        258 |         53 |         18 |        329 |
+| YAML            |          3 |         78 |         72 |         32 |        182 |
+| JSON            |          3 |         73 |          0 |          1 |         74 |
+| Gradle          |          3 |         69 |          6 |         15 |         90 |
+| Ruby            |          1 |         33 |          2 |         10 |         45 |
+| Swift           |          2 |         19 |          2 |          6 |         27 |
+| Markdown        |          2 |         13 |          0 |          9 |         22 |
+| Properties      |          2 |          8 |          0 |          1 |          9 |
+| Kotlin          |          1 |          3 |          0 |          3 |          6 |
+| C++             |          1 |          1 |          0 |          1 |          2 |
++-----------------+------------+------------+------------+------------+------------+
+
+Directories
++--------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| path                                                                                                               | files      | code       | comment    | blank      | total      |
++--------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+| .                                                                                                                  |         76 |     10,733 |      9,637 |      5,810 |     26,180 |
+| . (Files)                                                                                                          |          4 |         88 |         72 |         39 |        199 |
+| android                                                                                                            |         15 |        201 |         57 |         30 |        288 |
+| android (Files)                                                                                                    |          3 |         40 |          0 |          9 |         49 |
+| android/app                                                                                                        |         11 |        156 |         57 |         21 |        234 |
+| android/app (Files)                                                                                                |          2 |         81 |          6 |          7 |         94 |
+| android/app/src                                                                                                    |          9 |         75 |         51 |         14 |        140 |
+| android/app/src/debug                                                                                              |          1 |          3 |          4 |          1 |          8 |
+| android/app/src/main                                                                                               |          7 |         69 |         43 |         12 |        124 |
+| android/app/src/main (Files)                                                                                       |          1 |         37 |         11 |          2 |         50 |
+| android/app/src/main/kotlin                                                                                        |          1 |          3 |          0 |          3 |          6 |
+| android/app/src/main/kotlin/com                                                                                    |          1 |          3 |          0 |          3 |          6 |
+| android/app/src/main/kotlin/com/example                                                                            |          1 |          3 |          0 |          3 |          6 |
+| android/app/src/main/kotlin/com/example/connectgate                                                                |          1 |          3 |          0 |          3 |          6 |
+| android/app/src/main/res                                                                                           |          5 |         29 |         32 |          7 |         68 |
+| android/app/src/main/res/drawable                                                                                  |          1 |          4 |          7 |          2 |         13 |
+| android/app/src/main/res/drawable-v21                                                                              |          1 |          4 |          7 |          2 |         13 |
+| android/app/src/main/res/mipmap-anydpi-v26                                                                         |          1 |          3 |          0 |          1 |          4 |
+| android/app/src/main/res/values                                                                                    |          1 |          9 |          9 |          1 |         19 |
+| android/app/src/main/res/values-night                                                                              |          1 |          9 |          9 |          1 |         19 |
+| android/app/src/profile                                                                                            |          1 |          3 |          4 |          1 |          8 |
+| android/gradle                                                                                                     |          1 |          5 |          0 |          0 |          5 |
+| android/gradle/wrapper                                                                                             |          1 |          5 |          0 |          0 |          5 |
+| ios                                                                                                                |         15 |        977 |         37 |         43 |      1,057 |
+| ios (Files)                                                                                                        |          1 |         33 |          2 |         10 |         45 |
+| ios/Flutter                                                                                                        |          1 |         26 |          0 |          1 |         27 |
+| ios/Runner                                                                                                         |          9 |        184 |          2 |         10 |        196 |
+| ios/Runner (Files)                                                                                                 |          4 |         96 |          0 |          5 |        101 |
+| ios/Runner.xcodeproj                                                                                               |          2 |        719 |         31 |         17 |        767 |
+| ios/Runner.xcodeproj (Files)                                                                                       |          1 |        711 |         31 |         16 |        758 |
+| ios/Runner.xcodeproj/project.xcworkspace                                                                           |          1 |          8 |          0 |          1 |          9 |
+| ios/Runner.xcodeproj/project.xcworkspace/xcshareddata                                                              |          1 |          8 |          0 |          1 |          9 |
+| ios/Runner.xcworkspace                                                                                             |          1 |          8 |          0 |          1 |          9 |
+| ios/Runner.xcworkspace/xcshareddata                                                                                |          1 |          8 |          0 |          1 |          9 |
+| ios/Runner/Assets.xcassets                                                                                         |          3 |         27 |          0 |          3 |         30 |
+| ios/Runner/Assets.xcassets/AppIcon.appiconset                                                                      |          1 |          1 |          0 |          0 |          1 |
+| ios/Runner/Assets.xcassets/LaunchImage.imageset                                                                    |          2 |         26 |          0 |          3 |         29 |
+| ios/Runner/Base.lproj                                                                                              |          2 |         61 |          2 |          2 |         65 |
+| ios/RunnerTests                                                                                                    |          1 |          7 |          2 |          4 |         13 |
+| lib                                                                                                                |         41 |      9,453 |      9,461 |      5,692 |     24,606 |
+| lib (Files)                                                                                                        |          2 |         96 |         15 |         12 |        123 |
+| lib/Screen                                                                                                         |         17 |      7,136 |      7,362 |      4,178 |     18,676 |
+| lib/Screen (Files)                                                                                                 |          1 |         94 |         37 |         11 |        142 |
+| lib/Screen/Admin_Side                                                                                              |          8 |      3,994 |      4,432 |      2,066 |     10,492 |
+| lib/Screen/User_Side                                                                                               |          8 |      3,048 |      2,893 |      2,101 |      8,042 |
+| lib/Services                                                                                                       |          4 |        735 |        445 |        159 |      1,339 |
+| lib/Utils                                                                                                          |          1 |          0 |         23 |         11 |         34 |
+| lib/Widgets                                                                                                        |          4 |        601 |      1,412 |      1,192 |      3,205 |
+| lib/core                                                                                                           |          4 |        234 |        107 |         54 |        395 |
+| lib/language                                                                                                       |          2 |        474 |         12 |         18 |        504 |
+| lib/models                                                                                                         |          5 |        113 |         48 |         38 |        199 |
+| lib/providers                                                                                                      |          1 |         32 |         35 |         19 |         86 |
+| lib/shared_pref                                                                                                    |          1 |         32 |          2 |         11 |         45 |
+| test                                                                                                               |          1 |         14 |         10 |          6 |         30 |
++--------------------------------------------------------------------------------------------------------------------+------------+------------+------------+------------+------------+
+
+Files
++--------------------------------------------------------------------------------------------------------------------+-----------------+------------+------------+------------+------------+
+| filename                                                                                                           | language        | code       | comment    | blank      | total      |
++--------------------------------------------------------------------------------------------------------------------+-----------------+------------+------------+------------+------------+
+| /Users/golden/Documents/connectgate/README.md                                                                      | Markdown        |         10 |          0 |          7 |         17 |
+| /Users/golden/Documents/connectgate/analysis_options.yaml                                                          | YAML            |          3 |         22 |          4 |         29 |
+| /Users/golden/Documents/connectgate/android/app/build.gradle                                                       | Gradle          |         32 |          6 |          7 |         45 |
+| /Users/golden/Documents/connectgate/android/app/google-services.json                                               | JSON            |         49 |          0 |          0 |         49 |
+| /Users/golden/Documents/connectgate/android/app/src/debug/AndroidManifest.xml                                      | XML             |          3 |          4 |          1 |          8 |
+| /Users/golden/Documents/connectgate/android/app/src/main/AndroidManifest.xml                                       | XML             |         37 |         11 |          2 |         50 |
+| /Users/golden/Documents/connectgate/android/app/src/main/kotlin/com/example/connectgate/MainActivity.kt            | Kotlin          |          3 |          0 |          3 |          6 |
+| /Users/golden/Documents/connectgate/android/app/src/main/res/drawable-v21/launch_background.xml                    | XML             |          4 |          7 |          2 |         13 |
+| /Users/golden/Documents/connectgate/android/app/src/main/res/drawable/launch_background.xml                        | XML             |          4 |          7 |          2 |         13 |
+| /Users/golden/Documents/connectgate/android/app/src/main/res/mipmap-anydpi-v26/launcher_icon.xml                   | XML             |          3 |          0 |          1 |          4 |
+| /Users/golden/Documents/connectgate/android/app/src/main/res/values-night/styles.xml                               | XML             |          9 |          9 |          1 |         19 |
+| /Users/golden/Documents/connectgate/android/app/src/main/res/values/styles.xml                                     | XML             |          9 |          9 |          1 |         19 |
+| /Users/golden/Documents/connectgate/android/app/src/profile/AndroidManifest.xml                                    | XML             |          3 |          4 |          1 |          8 |
+| /Users/golden/Documents/connectgate/android/build.gradle                                                           | Gradle          |         16 |          0 |          3 |         19 |
+| /Users/golden/Documents/connectgate/android/gradle.properties                                                      | Properties      |          3 |          0 |          1 |          4 |
+| /Users/golden/Documents/connectgate/android/gradle/wrapper/gradle-wrapper.properties                               | Properties      |          5 |          0 |          0 |          5 |
+| /Users/golden/Documents/connectgate/android/settings.gradle                                                        | Gradle          |         21 |          0 |          5 |         26 |
+| /Users/golden/Documents/connectgate/devtools_options.yaml                                                          | YAML            |          3 |          0 |          1 |          4 |
+| /Users/golden/Documents/connectgate/ios/Flutter/AppFrameworkInfo.plist                                             | XML             |         26 |          0 |          1 |         27 |
+| /Users/golden/Documents/connectgate/ios/Podfile                                                                    | Ruby            |         33 |          2 |         10 |         45 |
+| /Users/golden/Documents/connectgate/ios/Runner.xcodeproj/project.pbxproj                                           | Project.pbxproj |        711 |         31 |         16 |        758 |
+| /Users/golden/Documents/connectgate/ios/Runner.xcodeproj/project.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist | XML             |          8 |          0 |          1 |          9 |
+| /Users/golden/Documents/connectgate/ios/Runner.xcworkspace/xcshareddata/IDEWorkspaceChecks.plist                   | XML             |          8 |          0 |          1 |          9 |
+| /Users/golden/Documents/connectgate/ios/Runner/AppDelegate.swift                                                   | Swift           |         12 |          0 |          2 |         14 |
+| /Users/golden/Documents/connectgate/ios/Runner/Assets.xcassets/AppIcon.appiconset/Contents.json                    | JSON            |          1 |          0 |          0 |          1 |
+| /Users/golden/Documents/connectgate/ios/Runner/Assets.xcassets/LaunchImage.imageset/Contents.json                  | JSON            |         23 |          0 |          1 |         24 |
+| /Users/golden/Documents/connectgate/ios/Runner/Assets.xcassets/LaunchImage.imageset/README.md                      | Markdown        |          3 |          0 |          2 |          5 |
+| /Users/golden/Documents/connectgate/ios/Runner/Base.lproj/LaunchScreen.storyboard                                  | XML             |         36 |          1 |          1 |         38 |
+| /Users/golden/Documents/connectgate/ios/Runner/Base.lproj/Main.storyboard                                          | XML             |         25 |          1 |          1 |         27 |
+| /Users/golden/Documents/connectgate/ios/Runner/GoogleService-Info.plist                                            | XML             |         32 |          0 |          0 |         32 |
+| /Users/golden/Documents/connectgate/ios/Runner/Info.plist                                                          | XML             |         51 |          0 |          2 |         53 |
+| /Users/golden/Documents/connectgate/ios/Runner/Runner-Bridging-Header.h                                            | C++             |          1 |          0 |          1 |          2 |
+| /Users/golden/Documents/connectgate/ios/RunnerTests/RunnerTests.swift                                              | Swift           |          7 |          2 |          4 |         13 |
+| /Users/golden/Documents/connectgate/lib/Screen/Admin_Side/Admin_Main_Screen.dart                                   | Dart            |         83 |         19 |         12 |        114 |
+| /Users/golden/Documents/connectgate/lib/Screen/Admin_Side/Answeared.Admin.dart                                     | Dart            |        313 |        929 |        743 |      1,985 |
+| /Users/golden/Documents/connectgate/lib/Screen/Admin_Side/Login_Admin.dart                                         | Dart            |        427 |        139 |         30 |        596 |
+| /Users/golden/Documents/connectgate/lib/Screen/Admin_Side/Profile_Admin.dart                                       | Dart            |        606 |         40 |         23 |        669 |
+| /Users/golden/Documents/connectgate/lib/Screen/Admin_Side/Question_Add.dart                                        | Dart            |        723 |        723 |        218 |      1,664 |
+| /Users/golden/Documents/connectgate/lib/Screen/Admin_Side/UsersGroupsCreate.dart                                   | Dart            |        711 |      1,037 |        103 |      1,851 |
+| /Users/golden/Documents/connectgate/lib/Screen/Admin_Side/about_admin.dart                                         | Dart            |        271 |        296 |         23 |        590 |
+| /Users/golden/Documents/connectgate/lib/Screen/Admin_Side/see_users_answers_admin.dart                             | Dart            |        860 |      1,249 |        914 |      3,023 |
+| /Users/golden/Documents/connectgate/lib/Screen/Splash_Screen.dart                                                  | Dart            |         94 |         37 |         11 |        142 |
+| /Users/golden/Documents/connectgate/lib/Screen/User_Side/Answeared_User.dart                                       | Dart            |        117 |         15 |         14 |        146 |
+| /Users/golden/Documents/connectgate/lib/Screen/User_Side/Login_User.dart                                           | Dart            |        516 |        483 |        424 |      1,423 |
+| /Users/golden/Documents/connectgate/lib/Screen/User_Side/Open_Q_Page.dart                                          | Dart            |        402 |        793 |        787 |      1,982 |
+| /Users/golden/Documents/connectgate/lib/Screen/User_Side/Profile_User.dart                                         | Dart            |        576 |         31 |         16 |        623 |
+| /Users/golden/Documents/connectgate/lib/Screen/User_Side/Question_User.dart                                        | Dart            |        377 |         62 |         28 |        467 |
+| /Users/golden/Documents/connectgate/lib/Screen/User_Side/User_Main_Screen.dart                                     | Dart            |         81 |         29 |         13 |        123 |
+| /Users/golden/Documents/connectgate/lib/Screen/User_Side/about.dart                                                | Dart            |        270 |        297 |         26 |        593 |
+| /Users/golden/Documents/connectgate/lib/Screen/User_Side/see_users_answers.dart                                    | Dart            |        709 |      1,183 |        793 |      2,685 |
+| /Users/golden/Documents/connectgate/lib/Services/answer_service.dart                                               | Dart            |        118 |         57 |         25 |        200 |
+| /Users/golden/Documents/connectgate/lib/Services/auth_services.dart                                                | Dart            |        324 |         20 |         36 |        380 |
+| /Users/golden/Documents/connectgate/lib/Services/group_services.dart                                               | Dart            |        168 |        191 |         64 |        423 |
+| /Users/golden/Documents/connectgate/lib/Services/question_services.dart                                            | Dart            |        125 |        177 |         34 |        336 |
+| /Users/golden/Documents/connectgate/lib/Utils/Image_picker_help_dialog.dart                                        | Dart            |          0 |         23 |         11 |         34 |
+| /Users/golden/Documents/connectgate/lib/Widgets/Indicator_widgets.dart                                             | Dart            |         42 |          1 |          4 |         47 |
+| /Users/golden/Documents/connectgate/lib/Widgets/answer_card_admin_side.dart                                        | Dart            |          0 |      1,290 |      1,132 |      2,422 |
+| /Users/golden/Documents/connectgate/lib/Widgets/answer_card_user_side.dart                                         | Dart            |        459 |          1 |         29 |        489 |
+| /Users/golden/Documents/connectgate/lib/Widgets/pie_cahrt_widgets.dart                                             | Dart            |        100 |        120 |         27 |        247 |
+| /Users/golden/Documents/connectgate/lib/core/CeckForUpdate.dart                                                    | Dart            |         98 |        103 |         42 |        243 |
+| /Users/golden/Documents/connectgate/lib/core/Check internet.dart                                                   | Dart            |         53 |          1 |          5 |         59 |
+| /Users/golden/Documents/connectgate/lib/core/MyImages.dart                                                         | Dart            |         10 |          1 |          2 |         13 |
+| /Users/golden/Documents/connectgate/lib/core/NoInternet.dart                                                       | Dart            |         73 |          2 |          5 |         80 |
+| /Users/golden/Documents/connectgate/lib/firebase_options.dart                                                      | Dart            |         55 |         12 |          4 |         71 |
+| /Users/golden/Documents/connectgate/lib/language/MyControler.dart                                                  | Dart            |         27 |          7 |          7 |         41 |
+| /Users/golden/Documents/connectgate/lib/language/text.dart                                                         | Dart            |        447 |          5 |         11 |        463 |
+| /Users/golden/Documents/connectgate/lib/main.dart                                                                  | Dart            |         41 |          3 |          8 |         52 |
+| /Users/golden/Documents/connectgate/lib/models/admin_model.dart                                                    | Dart            |         21 |          0 |          3 |         24 |
+| /Users/golden/Documents/connectgate/lib/models/group_model.dart                                                    | Dart            |         22 |         23 |         14 |         59 |
+| /Users/golden/Documents/connectgate/lib/models/question_model.dart                                                 | Dart            |         39 |         23 |         17 |         79 |
+| /Users/golden/Documents/connectgate/lib/models/static_value.dart                                                   | Dart            |         10 |          1 |          3 |         14 |
+| /Users/golden/Documents/connectgate/lib/models/user_model.dart                                                     | Dart            |         21 |          1 |          1 |         23 |
+| /Users/golden/Documents/connectgate/lib/providers/question_provider.dart                                           | Dart            |         32 |         35 |         19 |         86 |
+| /Users/golden/Documents/connectgate/lib/shared_pref/shared_pref.dart                                               | Dart            |         32 |          2 |         11 |         45 |
+| /Users/golden/Documents/connectgate/pubspec.yaml                                                                   | YAML            |         72 |         50 |         27 |        149 |
+| /Users/golden/Documents/connectgate/test/widget_test.dart                                                          | Dart            |         14 |         10 |          6 |         30 |
+| Total                                                                                                              |                 |     10,733 |      9,637 |      5,810 |     26,180 |
++--------------------------------------------------------------------------------------------------------------------+-----------------+------------+------------+------------+------------+

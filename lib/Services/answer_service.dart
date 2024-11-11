@@ -37,10 +37,62 @@ class AnswerService {
     }
   }
 
-  // Calculate option percentages for MultipleChoice questions
+  // // Calculate option percentages for MultipleChoice questions
+  // Future<Map<String, double>> calculateOptionPercentages(
+  //     String title, List<dynamic> options) async {
+  //   try {
+  //     final answersQuerySnapshot = await FirebaseFirestore.instance
+  //         .collection(org)
+  //         .doc(city)
+  //         .collection('answers')
+  //         .where('title', isEqualTo: title)
+  //         .get();
+
+  //     final optionCounts = <String, int>{};
+  //     int totalAnswers = 0;
+
+  //     // Initialize optionCounts with all available options set to 0
+  //     for (var option in options) {
+  //       optionCounts[option] = 0;
+  //     }
+
+  //     for (var answerDoc in answersQuerySnapshot.docs) {
+  //       final userAnswer = answerDoc.get('answer') as String? ?? '';
+  //       final selectedOptions =
+  //           userAnswer.split(',').map((e) => e.trim()).toList();
+
+  //       for (var option in selectedOptions) {
+  //         if (optionCounts.containsKey(option)) {
+  //           optionCounts[option] = (optionCounts[option] ?? 0) + 1;
+  //           totalAnswers++;
+  //         }
+  //       }
+  //     }
+
+  //     final optionPercentages = <String, double>{};
+  //     if (totalAnswers > 0) {
+  //       optionCounts.forEach((option, count) {
+  //         optionPercentages[option] = (count / totalAnswers) * 100;
+  //       });
+  //     } else {
+  //       // If there are no answers, set all options to 0%
+  //       for (var option in options) {
+  //         optionPercentages[option] = 0.0;
+  //       }
+  //     }
+
+  //     return optionPercentages;
+  //   } catch (e) {
+  //     debugPrint('Error calculating percentages: $e');
+  //     return {};
+  //   }
+  // }
+
+// Calculate option percentages for MultipleChoice questions
   Future<Map<String, double>> calculateOptionPercentages(
       String title, List<dynamic> options) async {
     try {
+      // Query the answers for this specific question
       final answersQuerySnapshot = await FirebaseFirestore.instance
           .collection(org)
           .doc(city)
@@ -48,27 +100,22 @@ class AnswerService {
           .where('title', isEqualTo: title)
           .get();
 
-      final optionCounts = <String, int>{};
+      // Initialize counters for each option
+      final optionCounts = <String, int>{for (var option in options) option: 0};
       int totalAnswers = 0;
 
-      // Initialize optionCounts with all available options set to 0
-      for (var option in options) {
-        optionCounts[option] = 0;
-      }
-
+      // Count each selected answer
       for (var answerDoc in answersQuerySnapshot.docs) {
         final userAnswer = answerDoc.get('answer') as String? ?? '';
-        final selectedOptions =
-            userAnswer.split(',').map((e) => e.trim()).toList();
 
-        for (var option in selectedOptions) {
-          if (optionCounts.containsKey(option)) {
-            optionCounts[option] = (optionCounts[option] ?? 0) + 1;
-            totalAnswers++;
-          }
+        // If the answer is a single choice, increment count
+        if (optionCounts.containsKey(userAnswer)) {
+          optionCounts[userAnswer] = optionCounts[userAnswer]! + 1;
+          totalAnswers++;
         }
       }
 
+      // Calculate the percentage for each option
       final optionPercentages = <String, double>{};
       if (totalAnswers > 0) {
         optionCounts.forEach((option, count) {

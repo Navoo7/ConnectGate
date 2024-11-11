@@ -137,6 +137,7 @@ class _QuestionUserState extends State<QuestionUser> {
                             final options =
                                 question['options'] as List<dynamic>;
                             final groupname = question['groupname'] as String;
+                            final imageUrl = question['imageUrl'] as String;
 
                             // final formattedTimestamp = formatTimestamp(timestamp);
                             Timestamp data =
@@ -264,6 +265,8 @@ class _QuestionUserState extends State<QuestionUser> {
                                                                   options,
                                                               'groupname':
                                                                   groupname,
+                                                              'imageUrl':
+                                                                  imageUrl
                                                             };
 
                                                             if (hasAnswered) {

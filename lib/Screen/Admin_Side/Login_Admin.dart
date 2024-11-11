@@ -22,6 +22,7 @@ class LoginAdmin extends StatefulWidget {
 
 class _LoginAdminState extends State<LoginAdmin> {
   bool showpass = true;
+  bool isLoading = false; // Add loading state
   final TextEditingController _emailControler = TextEditingController();
   final TextEditingController _passwordControler = TextEditingController();
   bool pass_error = false;
@@ -306,113 +307,231 @@ class _LoginAdminState extends State<LoginAdmin> {
                             height: 25,
                             width: double.infinity,
                           ),
+
                           SizedBox(
                             height: 47,
                             width: 260,
                             child: ElevatedButton(
-                              onPressed: () async {
-                                setState(() {
-                                  email_error = _emailControler.text.isEmpty;
-                                  pass_error = _passwordControler.text.isEmpty;
-                                  pass_error_lenght =
-                                      _passwordControler.text.length < 8;
-                                });
-
-                                if (_emailControler.text.isEmpty ||
-                                    _passwordControler.text.isEmpty) {
-                                  _showAlertDialog();
-                                } else if (_passwordControler.text.length < 8) {
-                                  pass_error_lenght = true;
-                                } else {
-                                  try {
-                                    AuthService authService =
-                                        AuthService(context);
-                                    MyAppAdmins? admin =
-                                        await authService.signInAdmin(
-                                      email: _emailControler.text.trim(),
-                                      password: _passwordControler.text.trim(),
-                                    );
-
-                                    if (admin != null) {
+                              onPressed: isLoading
+                                  ? null // Disable button when loading
+                                  : () async {
                                       setState(() {
-                                        currentAdmin = admin;
+                                        email_error =
+                                            _emailControler.text.isEmpty;
+                                        pass_error =
+                                            _passwordControler.text.isEmpty;
+                                        pass_error_lenght =
+                                            _passwordControler.text.length < 8;
                                       });
 
-                                      Navigator.pushAndRemoveUntil(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              const AdminMainScreen(),
-                                        ),
-                                        (route) => false,
-                                      );
-                                    } else {
-                                      _showSnackBar(
-                                          "Login failed. Please check your credentials.");
-                                    }
-                                  } catch (e) {
-                                    print("Error during login: $e");
-                                    _showSnackBar(
-                                        "An error occurred. Please try again.");
-                                  }
-                                }
-                              },
+                                      if (_emailControler.text.isEmpty ||
+                                          _passwordControler.text.isEmpty) {
+                                        _showAlertDialog();
+                                      } else if (_passwordControler
+                                              .text.length <
+                                          8) {
+                                        pass_error_lenght = true;
+                                      } else {
+                                        setState(() {
+                                          isLoading = true; // Start loading
+                                        });
 
-                              // onPressed: () async {
-                              //   setState(() {
-                              //     email_error = _emailControler.text.isEmpty;
-                              //     pass_error = _passwordControler.text.isEmpty;
-                              //     pass_error_lenght =
-                              //         _passwordControler.text.length < 8;
-                              //   });
+                                        try {
+                                          AuthService authService =
+                                              AuthService(context);
+                                          MyAppAdmins? admin =
+                                              await authService.signInAdmin(
+                                            email: _emailControler.text.trim(),
+                                            password:
+                                                _passwordControler.text.trim(),
+                                          );
 
-                              //   if (_emailControler.text.isEmpty ||
-                              //       _passwordControler.text.isEmpty) {
-                              //     _showAlertDialog();
-                              //   } else if (_passwordControler.text.length < 8) {
-                              //     pass_error_lenght = true;
-                              //   } else {
-                              //     // Perform the admin login
-                              //     AuthService authService =
-                              //         AuthService(context);
-                              //     MyAppAdmins? admin =
-                              //         await authService.signInAdmin(
-                              //       email: _emailControler.text.trim(),
-                              //       password: _passwordControler.text.trim(),
-                              //     );
+                                          if (admin != null) {
+                                            setState(() {
+                                              currentAdmin = admin;
+                                            });
 
-                              //     if (admin != null) {
-                              //       setState(() {
-                              //         currentAdmin = admin;
-                              //       });
-
-                              //       // Redirect to admin main screen if login is successful
-                              //       Navigator.pushAndRemoveUntil(
-                              //         context,
-                              //         MaterialPageRoute(
-                              //           builder: (context) =>
-                              //               const AdminMainScreen(),
-                              //         ),
-                              //         (route) => true,
-                              //       );
-                              //     }
-                              //   }
-                              // },
-                              // ... The rest of the code for the ElevatedButton ...
-
+                                            Navigator.pushAndRemoveUntil(
+                                              context,
+                                              MaterialPageRoute(
+                                                builder: (context) =>
+                                                    const AdminMainScreen(),
+                                              ),
+                                              (route) => false,
+                                            );
+                                          } else {
+                                            _showSnackBar(
+                                                "Login failed. Please check your credentials.");
+                                          }
+                                        } catch (e) {
+                                          print("Error during login: $e");
+                                          _showSnackBar(
+                                              "An error occurred. Please try again.");
+                                        } finally {
+                                          setState(() {
+                                            isLoading = false; // Stop loading
+                                          });
+                                        }
+                                      }
+                                    },
                               style: ElevatedButton.styleFrom(
-                                  foregroundColor: Colors.white,
-                                  backgroundColor:
-                                      const Color.fromARGB(255, 0, 0, 0),
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10.0),
-                                  )),
-                              child: Text(
-                                "Login".tr,
-                                style: const TextStyle(color: Colors.white),
+                                foregroundColor: Colors.white,
+                                backgroundColor:
+                                    const Color.fromARGB(255, 0, 0, 0),
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(10.0),
+                                ),
                               ),
+                              child: isLoading
+                                  ? SizedBox(
+                                      height: 22,
+                                      width: 22,
+                                      child: const CircularProgressIndicator(
+                                        color: Colors.white,
+                                        strokeWidth: 1.5,
+                                      ),
+                                    )
+                                  : Text(
+                                      "Login".tr,
+                                      style:
+                                          const TextStyle(color: Colors.white),
+                                    ),
                             ),
                           ),
+
+                          // SizedBox(
+                          //   height: 47,
+                          //   width: 260,
+                          //   child: ElevatedButton(
+                          //     onPressed: isLoading
+                          //         ? null // Disable button when loading
+                          //         : () async {
+                          //             setState(() {
+                          //               email_error =
+                          //                   _emailControler.text.isEmpty;
+                          //               pass_error =
+                          //                   _passwordControler.text.isEmpty;
+                          //               pass_error_lenght =
+                          //                   _passwordControler.text.length < 8;
+                          //             });
+
+                          //             if (_emailControler.text.isEmpty ||
+                          //                 _passwordControler.text.isEmpty) {
+                          //               _showAlertDialog();
+                          //             } else if (_passwordControler
+                          //                     .text.length <
+                          //                 8) {
+                          //               pass_error_lenght = true;
+                          //             } else {
+                          //               setState(() {
+                          //                 isLoading = true; // Start loading
+                          //               });
+
+                          //               try {
+                          //                 AuthService authService =
+                          //                     AuthService(context);
+                          //                 MyAppAdmins? admin =
+                          //                     await authService.signInAdmin(
+                          //                   email: _emailControler.text.trim(),
+                          //                   password:
+                          //                       _passwordControler.text.trim(),
+                          //                 );
+
+                          //                 if (admin != null) {
+                          //                   setState(() {
+                          //                     currentAdmin = admin;
+                          //                   });
+
+                          //                   Navigator.pushAndRemoveUntil(
+                          //                     context,
+                          //                     MaterialPageRoute(
+                          //                       builder: (context) =>
+                          //                           const AdminMainScreen(),
+                          //                     ),
+                          //                     (route) => false,
+                          //                   );
+                          //                 } else {
+                          //                   _showSnackBar(
+                          //                       "Login failed. Please check your credentials.");
+                          //                 }
+                          //               } catch (e) {
+                          //                 print("Error during login: $e");
+                          //                 _showSnackBar(
+                          //                     "An error occurred. Please try again.");
+                          //               } finally {
+                          //                 setState(() {
+                          //                   isLoading = false; // Stop loading
+                          //                 });
+                          //               }
+                          //             }
+                          //           },
+
+                          //     // onPressed: () async {
+                          //     //   setState(() {
+                          //     //     email_error = _emailControler.text.isEmpty;
+                          //     //     pass_error = _passwordControler.text.isEmpty;
+                          //     //     pass_error_lenght =
+                          //     //         _passwordControler.text.length < 8;
+                          //     //   });
+
+                          //     //   if (_emailControler.text.isEmpty ||
+                          //     //       _passwordControler.text.isEmpty) {
+                          //     //     _showAlertDialog();
+                          //     //   } else if (_passwordControler.text.length < 8) {
+                          //     //     pass_error_lenght = true;
+                          //     //   } else {
+                          //     //     // Perform the admin login
+                          //     //     AuthService authService =
+                          //     //         AuthService(context);
+                          //     //     MyAppAdmins? admin =
+                          //     //         await authService.signInAdmin(
+                          //     //       email: _emailControler.text.trim(),
+                          //     //       password: _passwordControler.text.trim(),
+                          //     //     );
+
+                          //     //     if (admin != null) {
+                          //     //       setState(() {
+                          //     //         currentAdmin = admin;
+                          //     //       });
+
+                          //     //       // Redirect to admin main screen if login is successful
+                          //     //       Navigator.pushAndRemoveUntil(
+                          //     //         context,
+                          //     //         MaterialPageRoute(
+                          //     //           builder: (context) =>
+                          //     //               const AdminMainScreen(),
+                          //     //         ),
+                          //     //         (route) => true,
+                          //     //       );
+                          //     //     }
+                          //     //   }
+                          //     // },
+                          //     // ... The rest of the code for the ElevatedButton ...
+
+                          //     style: ElevatedButton.styleFrom(
+                          //         foregroundColor: Colors.white,
+                          //         backgroundColor:
+                          //             const Color.fromARGB(255, 0, 0, 0),
+                          //         shape: RoundedRectangleBorder(
+                          //           borderRadius: BorderRadius.circular(10.0),
+                          //         )),
+                          //     child: isLoading
+                          //         ? SizedBox(
+                          //             height: 22,
+                          //             width: 22,
+                          //             child: const CircularProgressIndicator(
+                          //               color: Colors
+                          //                   .white, // Customize color if needed
+                          //               strokeWidth: 1.5,
+                          //             ),
+                          //           )
+                          //         : Text(
+                          //             "Login".tr,
+                          //             style:
+                          //                 const TextStyle(color: Colors.white),
+                          //           ),
+                          //   ),
+                          // ),
                         ],
                       ),
                     ),
